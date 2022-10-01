@@ -25,7 +25,7 @@
 样例程序如下：
 
 ```
-i = 0; # this is a comment
+i = 0; // this is a comment
 s = 0;
 while i <= 10 {
     i = i + 1;
@@ -35,3 +35,11 @@ s;
 ```
 
 输出：`66`
+
+若要使用 Karl，可将使用命令行运行解释器，如使用 Windows x86-64 PowerShell（解释器 `karl-x86-64.exe` 和文件 `a.karl` 均在 PowerShell 目录下）：
+
+```
+PS ...> .\karl-x86-64.exe a.karl
+```
+
+使用其他操作系统请自行编译。
