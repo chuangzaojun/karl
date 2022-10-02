@@ -1,5 +1,9 @@
 # The Karl Programming Language
 
+![](https://gitee.com/karl-dev/karl/raw/master/logo.png)
+
+**全世界无产者，联合起来！**
+
 一门十分简陋的编程语言。
 
 目前支持的语句有：
