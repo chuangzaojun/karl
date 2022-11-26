@@ -7,6 +7,7 @@ namespace karl {
 
     enum class TokenType {
         EndOfFile,
+        Unknown,
 
         LParen, // (
         RParen, // )
@@ -71,8 +72,9 @@ namespace karl {
         TokenType type;
         std::string literal;
         int line;
+        int column;
 
-        Token(TokenType _type, std::string _literal, int _line);
+        Token(TokenType _type, std::string _literal, int _line, int _column);
     };
 
 } // karl
