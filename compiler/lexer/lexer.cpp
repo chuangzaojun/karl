@@ -56,5 +56,143 @@ namespace karl {
         return st == src.substr(pos, st.size());
     }
 
+    void Lexer::skipWhiteSpace() {
+        while (true) {
+            if (isWhiteSpace(src[pos])) {
+                next(1);
+            } else if (test("\r\n") || test("\n\r")) {
+                next(2);
+                nextLine();
+            } else if (isNewLine(src[pos])) {
+                next(1);
+                nextLine();
+            } else if (test("//") || test("/*")) {
+                skipComment();
+            } else {
+                break;
+            }
+        }
+    }
+
+    bool Lexer::skipComment() {
+        if (test("//")) {
+            while (!isNewLine(src[pos])) {
+                next(1);
+            }
+        } else {
+            while (!test("*/")) {
+                if (test("\r\n") || test("\n\r")) {
+                    next(2);
+                    nextLine();
+                } else if (isNewLine(src[pos])) {
+                    next(1);
+                    nextLine();
+                } else {
+                    next(1);
+                }
+            }
+            next(2);
+        }
+    }
     
+    Token *Lexer::newToken(TokenType type, std::string literal) {
+        return new Token(type, literal, line, column);
+    }
+
+    Token *Lexer::newToken(TokenType type) {
+        return new Token(type, "", line, column);
+    }
+
+    Token *Lexer::nextToken() {
+        skipWhiteSpace();
+        switch (src[pos]) {
+        case '(':
+            next(1);
+            return newToken(TokenType::LParen);
+        case ')':
+            next(1);
+            return newToken(TokenType::RParen);
+        case '[':
+            next(1);
+            return newToken(TokenType::LBracket);
+        case ']':
+            next(1);
+            return newToken(TokenType::RBracket);
+        case '{':
+            next(1);
+            return newToken(TokenType::LBrace);
+        case '}':
+            next(1);
+            return newToken(TokenType::RBrace);
+        case ',':
+            next(1);
+            return newToken(TokenType::Comma);
+        case ';':
+            next(1);
+            return newToken(TokenType::Semicolon);
+        case ':':
+            return newToken(TokenType::Colon);
+        case '=':
+            if (test("==")) {
+                next(2);
+                return newToken(TokenType::Equal);
+            }
+            return newToken(TokenType::Assign);
+        case '<':
+            if (test("<<")) {
+                next(2);
+                return newToken(TokenType::LMove);
+            }
+            if (test("<=")) {
+                next(2);
+                return newToken(TokenType::LessEqual);
+            }
+            next(1);
+            return newToken(TokenType::LessThan);
+        case '>':
+            if (test(">>")) {
+                next(2);
+                return newToken(TokenType::LMove);
+            }
+            if (test(">=")) {
+                next(2);
+                return newToken(TokenType::GreaterEqual);
+            }
+            next(1);
+            return newToken(TokenType::GreaterThan);
+        case '!':
+            if (test("!=")) {
+                next(2);
+                return newToken(TokenType::NotEqual);
+            }
+            next(1);
+            return newToken(TokenType::Not);
+        case '&':
+            if (test("&&")) {
+                next(2);
+                return newToken(TokenType::And);
+            }
+            next(1);
+            return newToken(TokenType::BAnd);
+        case '|':
+            if (test("||")) {
+                next(2);
+                return newToken(TokenType::Or);
+            }
+            next(1);
+            return newToken(TokenType::BOr);
+        case '~':
+            next(1);
+            return newToken(TokenType::BNot);
+        case '^':
+            next(1);
+            return newToken(TokenType::BXor);
+        }
+        if (isDigit(src[pos]) || src[pos] == '_') {
+            std::string iden = scanIdentifier();
+            if (keywords.count(iden)) {
+                return newToken(keywords[iden], iden);
+            }
+        }
+    }
 } // karl

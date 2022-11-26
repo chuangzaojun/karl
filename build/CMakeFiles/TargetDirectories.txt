@@ -1,5 +1,3 @@
 D:/Code/karl/build/CMakeFiles/karl.dir
-D:/Code/karl/build/CMakeFiles/package.dir
-D:/Code/karl/build/CMakeFiles/package_source.dir
 D:/Code/karl/build/CMakeFiles/edit_cache.dir
 D:/Code/karl/build/CMakeFiles/rebuild_cache.dir

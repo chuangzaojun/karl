@@ -2,6 +2,7 @@
 #define KARL_LEXER_HPP
 
 #include "token.hpp"
+#include <string>
 
 namespace karl {
 
@@ -17,6 +18,11 @@ namespace karl {
         bool test(std::string st);
         void skipWhiteSpace();
         void skipComment();
+        std::string scanInt();
+        std::string scanString();
+        std::string scanIdentifier();
+        Token *newToken(TokenType type, std::string literal);
+        Token *newToken(TokenType type);
         
     public:
         Lexer(std::string _src);
