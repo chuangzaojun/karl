@@ -1,7 +1,7 @@
 [
 {
   "directory": "D:/Code/karl/build",
-  "command": "D:\\TDM-GCC-64\\bin\\g++.exe   -g -o CMakeFiles\\karl.dir\\main.cpp.obj -c D:\\Code\\karl\\main.cpp",
+  "command": "D:\\TDM-GCC-64\\bin\\g++.exe   -g -std=gnu++2a -o CMakeFiles\\karl.dir\\main.cpp.obj -c D:\\Code\\karl\\main.cpp",
   "file": "D:/Code/karl/main.cpp"
 }
 ]
