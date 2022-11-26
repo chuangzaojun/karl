@@ -1,3 +1,6 @@
 {
     "cmake.generator": "MinGW Makefiles",
+    "files.associations": {
+        "ranges": "cpp"
+    },
 }

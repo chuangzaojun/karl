@@ -1,5 +1,6 @@
 #include "lexer.hpp"
 #include <map>
+#include <string>
 
 namespace karl {
 
@@ -105,10 +106,20 @@ namespace karl {
 
     std::string Lexer::scanIdentifier() {
         std::string iden;
-        while(isLetter(src[pos])) {
+        while(isLetter(src[pos]) || isDigit(src[pos]) || src[pos] == '_') {
             iden += src[pos];
             next(1);
         }
+        return iden;
+    }
+
+    std::string scanInt() {
+        std::string intNum;
+        while (isDigit(src[pos])) {
+            intNum += src[pos];
+            next(1);
+        }
+        return intNum;
     }
 
     Token *Lexer::nextToken() {
@@ -196,13 +207,16 @@ namespace karl {
             next(1);
             return newToken(TokenType::BXor);
         }
-        if (isDigit(src[pos]) || src[pos] == '_') {
+        if (isLetter(src[pos]) || src[pos] == '_') {
             std::string iden = scanIdentifier();
             if (keywords.count(iden)) {
                 return newToken(keywords[iden]);
             }
-            return newToken(TokenType::Identifier);
+            return newToken(TokenType::Identifier, iden);
         }
-        
+        if (isDigit(src[pos])) {
+            
+            return newToken(TokenType::IntLiteral, scanInt());
+        }
     }
 } // karl
