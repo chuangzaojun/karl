@@ -128,6 +128,54 @@ karl/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\karl.dir\build.make CMakeFiles/karl.dir/build
 .PHONY : karl/fast
 
+compiler/lexer/lexer.obj: compiler/lexer/lexer.cpp.obj
+.PHONY : compiler/lexer/lexer.obj
+
+# target to build an object file
+compiler/lexer/lexer.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\karl.dir\build.make CMakeFiles/karl.dir/compiler/lexer/lexer.cpp.obj
+.PHONY : compiler/lexer/lexer.cpp.obj
+
+compiler/lexer/lexer.i: compiler/lexer/lexer.cpp.i
+.PHONY : compiler/lexer/lexer.i
+
+# target to preprocess a source file
+compiler/lexer/lexer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\karl.dir\build.make CMakeFiles/karl.dir/compiler/lexer/lexer.cpp.i
+.PHONY : compiler/lexer/lexer.cpp.i
+
+compiler/lexer/lexer.s: compiler/lexer/lexer.cpp.s
+.PHONY : compiler/lexer/lexer.s
+
+# target to generate assembly for a file
+compiler/lexer/lexer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\karl.dir\build.make CMakeFiles/karl.dir/compiler/lexer/lexer.cpp.s
+.PHONY : compiler/lexer/lexer.cpp.s
+
+compiler/lexer/token.obj: compiler/lexer/token.cpp.obj
+.PHONY : compiler/lexer/token.obj
+
+# target to build an object file
+compiler/lexer/token.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\karl.dir\build.make CMakeFiles/karl.dir/compiler/lexer/token.cpp.obj
+.PHONY : compiler/lexer/token.cpp.obj
+
+compiler/lexer/token.i: compiler/lexer/token.cpp.i
+.PHONY : compiler/lexer/token.i
+
+# target to preprocess a source file
+compiler/lexer/token.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\karl.dir\build.make CMakeFiles/karl.dir/compiler/lexer/token.cpp.i
+.PHONY : compiler/lexer/token.cpp.i
+
+compiler/lexer/token.s: compiler/lexer/token.cpp.s
+.PHONY : compiler/lexer/token.s
+
+# target to generate assembly for a file
+compiler/lexer/token.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\karl.dir\build.make CMakeFiles/karl.dir/compiler/lexer/token.cpp.s
+.PHONY : compiler/lexer/token.cpp.s
+
 main.obj: main.cpp.obj
 .PHONY : main.obj
 
@@ -161,6 +209,12 @@ help:
 	@echo ... edit_cache
 	@echo ... rebuild_cache
 	@echo ... karl
+	@echo ... compiler/lexer/lexer.obj
+	@echo ... compiler/lexer/lexer.i
+	@echo ... compiler/lexer/lexer.s
+	@echo ... compiler/lexer/token.obj
+	@echo ... compiler/lexer/token.i
+	@echo ... compiler/lexer/token.s
 	@echo ... main.obj
 	@echo ... main.i
 	@echo ... main.s

@@ -1,4 +1,8 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/karl.dir/compiler/lexer/lexer.cpp.obj"
+  "CMakeFiles/karl.dir/compiler/lexer/lexer.cpp.obj.d"
+  "CMakeFiles/karl.dir/compiler/lexer/token.cpp.obj"
+  "CMakeFiles/karl.dir/compiler/lexer/token.cpp.obj.d"
   "CMakeFiles/karl.dir/main.cpp.obj"
   "CMakeFiles/karl.dir/main.cpp.obj.d"
   "karl.exe"

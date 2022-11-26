@@ -9,6 +9,8 @@ namespace karl {
         EndOfFile,
         Unknown,
 
+        Identifier,
+
         LParen, // (
         RParen, // )
         LBracket, // [

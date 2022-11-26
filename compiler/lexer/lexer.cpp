@@ -103,6 +103,14 @@ namespace karl {
         return new Token(type, "", line, column);
     }
 
+    std::string Lexer::scanIdentifier() {
+        std::string iden;
+        while(isLetter(src[pos])) {
+            iden += src[pos];
+            next(1);
+        }
+    }
+
     Token *Lexer::nextToken() {
         skipWhiteSpace();
         switch (src[pos]) {
@@ -191,8 +199,10 @@ namespace karl {
         if (isDigit(src[pos]) || src[pos] == '_') {
             std::string iden = scanIdentifier();
             if (keywords.count(iden)) {
-                return newToken(keywords[iden], iden);
+                return newToken(keywords[iden]);
             }
+            return newToken(TokenType::Identifier);
         }
+        
     }
 } // karl
