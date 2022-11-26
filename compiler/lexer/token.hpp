@@ -65,7 +65,6 @@ namespace karl {
 
         // literals
         IntLiteral,
-        BoolLiteral,
         StringLiteral,
         CharLiteral
     };
