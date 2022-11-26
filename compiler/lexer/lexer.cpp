@@ -75,7 +75,7 @@ namespace karl {
         }
     }
 
-    bool Lexer::skipComment() {
+    void Lexer::skipComment() {
         if (test("//")) {
             while (!isNewLine(src[pos])) {
                 next(1);
@@ -171,7 +171,7 @@ namespace karl {
         case '>':
             if (test(">>")) {
                 next(2);
-                return newToken(TokenType::LMove);
+                return newToken(TokenType::RMove);
             }
             if (test(">=")) {
                 next(2);

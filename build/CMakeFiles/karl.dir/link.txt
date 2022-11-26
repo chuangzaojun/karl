@@ -1,3 +1,0 @@
-"D:\Program Files\CMake\bin\cmake.exe" -E rm -f CMakeFiles\karl.dir/objects.a
-D:\TDM-GCC-64\bin\ar.exe qc CMakeFiles\karl.dir/objects.a @CMakeFiles\karl.dir\objects1
-D:\TDM-GCC-64\bin\g++.exe -g -Wl,--whole-archive CMakeFiles\karl.dir/objects.a -Wl,--no-whole-archive -o karl.exe -Wl,--out-implib,libkarl.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\karl.dir\linkLibs.rsp
