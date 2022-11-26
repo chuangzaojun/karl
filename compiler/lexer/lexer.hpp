@@ -20,6 +20,7 @@ namespace karl {
         void skipComment();
         std::string scanInt();
         std::string scanString();
+        std::string scanChar();
         std::string scanIdentifier();
         Token *newToken(TokenType type, std::string literal);
         Token *newToken(TokenType type);

@@ -232,5 +232,8 @@ namespace karl {
         if (isDigit(src[pos])) {
             return newToken(TokenType::IntLiteral, scanInt());
         }
+        if (src[pos] == '\'') {
+
+        }
     }
 } // karl
