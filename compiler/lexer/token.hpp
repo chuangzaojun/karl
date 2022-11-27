@@ -6,8 +6,9 @@
 namespace karl {
 
     enum class TokenType {
+        _,
+
         EndOfFile,
-        Unknown,
 
         Identifier,
 
