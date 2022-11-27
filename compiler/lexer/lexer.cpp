@@ -233,7 +233,29 @@ namespace karl {
             return newToken(TokenType::IntLiteral, scanInt());
         }
         if (src[pos] == '\'') {
+            std::string ch = scanChar();
+        }
+    }
 
+    std::string Lexer::scanChar() {
+        std::string ch;
+        next(1);
+        while (src[pos] != '\'') {
+            if (src[pos] == '\\') {
+                switch (src[pos + 1]) {
+                    case 'a':
+                        next(2);
+                        ch += '\a';
+                        continue;
+                    case 'b':
+                        next(2);
+                        ch += '\b';
+                        continue;
+                    case 'f':
+                        next(2);
+                        ch +=
+                }
+            }
         }
     }
 } // karl

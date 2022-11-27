@@ -18,6 +18,7 @@ namespace karl {
         bool test(std::string st);
         void skipWhiteSpace();
         void skipComment();
+        void skipToWhiteSpace();
         std::string scanInt();
         std::string scanString();
         std::string scanChar();
