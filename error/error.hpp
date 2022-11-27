@@ -8,7 +8,7 @@ namespace karl {
         LexError
     };
 
-    void error(ErrorType type, int line, int column)
+    void error(ErrorType type, int line, int column);
 
 } // karl
 

@@ -1,4 +1,5 @@
 #include "lexer.hpp"
+#include "../../error/error.hpp"
 #include <map>
 #include <string>
 
@@ -124,6 +125,9 @@ namespace karl {
 
     Token *Lexer::nextToken() {
         skipWhiteSpace();
+        if (pos == src.size()) {
+            return newToken(TokenType::EndOfFile);
+        }
         switch (src[pos]) {
             case '(':
                 next(1);
@@ -233,8 +237,12 @@ namespace karl {
             return newToken(TokenType::IntLiteral, scanInt());
         }
         if (src[pos] == '\'') {
-            std::string ch = scanChar();
+            return newToken(TokenType::CharLiteral, scanChar());
         }
+        if (src[pos] == '\"') {
+            return newToken(TokenType::String, scanString());
+        }
+        error(ErrorType::LexError, line, column);
     }
 
     std::string Lexer::scanChar() {
@@ -253,9 +261,112 @@ namespace karl {
                         continue;
                     case 'f':
                         next(2);
-                        ch +=
+                        ch += '\f';
+                        continue;
+                    case 'n':
+                        next(2);
+                        ch += '\n';
+                        continue;
+                    case 'r':
+                        next(2);
+                        ch += '\r';
+                        continue;
+                    case 't':
+                        next(2);
+                        ch += '\t';
+                        continue;
+                    case 'v':
+                        next(2);
+                        ch += '\v';
+                        continue;
+                    case '\"':
+                        next(2);
+                        ch += '\"';
+                        continue;
+                    case '\'':
+                        next(2);
+                        ch += '\'';
+                        continue;
+                    case '\\':
+                        next(2);
+                        ch += '\\';
+                        continue;
+                }
+                ch += src[pos];
+                next(1);
+            } else {
+                ch += src[pos];
+                next(1);
+                if (isNewLine(src[pos])) {
+                    error(ErrorType::LexError, line, column);
                 }
             }
         }
+        next(1);
+        if (ch.size() != 1) {
+            error(ErrorType::LexError, line, column);
+        }
+        return ch;
+    }
+
+    std::string Lexer::scanString() {
+        std::string st;
+        next(1);
+        while (src[pos] != '\"') {
+            if (src[pos] == '\\') {
+                switch (src[pos + 1]) {
+                    case 'a':
+                        next(2);
+                        st += '\a';
+                        continue;
+                    case 'b':
+                        next(2);
+                        st += '\b';
+                        continue;
+                    case 'f':
+                        next(2);
+                        st += '\f';
+                        continue;
+                    case 'n':
+                        next(2);
+                        st += '\n';
+                        continue;
+                    case 'r':
+                        next(2);
+                        st += '\r';
+                        continue;
+                    case 't':
+                        next(2);
+                        st += '\t';
+                        continue;
+                    case 'v':
+                        next(2);
+                        st += '\v';
+                        continue;
+                    case '"':
+                        next(2);
+                        st += '\"';
+                        continue;
+                    case '\'':
+                        next(2);
+                        st += '\'';
+                        continue;
+                    case '\\':
+                        next(2);
+                        st += '\\';
+                        continue;
+                }
+                st += src[pos];
+                next(1);
+            } else {
+                st += src[pos];
+                next(1);
+                if (isNewLine(src[pos])) {
+                    error(ErrorType::LexError, line, column);
+                }
+            }
+        }
+        next(1);
+        return st;
     }
 } // karl

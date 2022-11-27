@@ -1,0 +1,24 @@
+# ninja log v5
+25	780	6912178143618154	CMakeFiles/karl.dir/error/error.cpp.obj	9c596e9c024ce466
+9	789	6912178143678164	CMakeFiles/karl.dir/compiler/lexer/token.cpp.obj	b741d7eb278c4be6
+2	916	6912178144964570	CMakeFiles/karl.dir/main.cpp.obj	c42dcb35cafc5cf8
+18	1087	6912178146664412	CMakeFiles/karl.dir/compiler/lexer/lexer.cpp.obj	7f5365ee853dab54
+1087	1339	6912178149089580	karl.exe	174b6761520559e0
+5	755	6912178251020835	CMakeFiles/karl.dir/main.cpp.obj	c42dcb35cafc5cf8
+755	936	6912178252807972	karl.exe	174b6761520559e0
+14	658	6912182457550040	CMakeFiles/karl.dir/error/error.cpp.obj	9c596e9c024ce466
+3	784	6912182458812516	CMakeFiles/karl.dir/main.cpp.obj	c42dcb35cafc5cf8
+9	952	6912182460483103	CMakeFiles/karl.dir/compiler/lexer/lexer.cpp.obj	7f5365ee853dab54
+986	1184	6912182462757187	karl.exe	174b6761520559e0
+4	905	6912184527119176	CMakeFiles/karl.dir/compiler/lexer/lexer.cpp.obj	7f5365ee853dab54
+906	1141	6912184529440162	karl.exe	174b6761520559e0
+4	988	6912185469035743	CMakeFiles/karl.dir/compiler/lexer/lexer.cpp.obj	7f5365ee853dab54
+988	1234	6912185471466267	karl.exe	174b6761520559e0
+4	719	6912185797971646	CMakeFiles/karl.dir/main.cpp.obj	c42dcb35cafc5cf8
+719	929	6912185800042213	karl.exe	174b6761520559e0
+5	668	6912186520778725	CMakeFiles/karl.dir/main.cpp.obj	c42dcb35cafc5cf8
+668	842	6912186522478598	karl.exe	174b6761520559e0
+5	755	6912186883266493	CMakeFiles/karl.dir/main.cpp.obj	c42dcb35cafc5cf8
+756	959	6912186885247273	karl.exe	174b6761520559e0
+4	1020	6912188225065209	CMakeFiles/karl.dir/compiler/lexer/lexer.cpp.obj	7f5365ee853dab54
+1020	1274	6912188227575993	karl.exe	174b6761520559e0
