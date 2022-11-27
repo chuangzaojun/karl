@@ -240,7 +240,7 @@ namespace karl {
             return newToken(TokenType::CharLiteral, scanChar());
         }
         if (src[pos] == '\"') {
-            return newToken(TokenType::String, scanString());
+            return newToken(TokenType::StringLiteral, scanString());
         }
         lexError(line, column);
     }
