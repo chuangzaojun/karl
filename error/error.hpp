@@ -4,11 +4,7 @@
 
 namespace karl {
 
-    enum class ErrorType {
-        LexError
-    };
-
-    void error(ErrorType type, int line, int column);
+    void lexError(int line, int column);
 
 } // karl
 

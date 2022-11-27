@@ -242,7 +242,7 @@ namespace karl {
         if (src[pos] == '\"') {
             return newToken(TokenType::String, scanString());
         }
-        error(ErrorType::LexError, line, column);
+        lexError(line, column);
     }
 
     std::string Lexer::scanChar() {
@@ -298,13 +298,13 @@ namespace karl {
                 ch += src[pos];
                 next(1);
                 if (isNewLine(src[pos])) {
-                    error(ErrorType::LexError, line, column);
+                    lexError(line, column);
                 }
             }
         }
         next(1);
         if (ch.size() != 1) {
-            error(ErrorType::LexError, line, column);
+            lexError(line, column);
         }
         return ch;
     }
@@ -362,7 +362,7 @@ namespace karl {
                 st += src[pos];
                 next(1);
                 if (isNewLine(src[pos])) {
-                    error(ErrorType::LexError, line, column);
+                    lexError(line, column);
                 }
             }
         }
