@@ -4,46 +4,23 @@
 
 ![](logo.png)
 
-一门十分简陋的编程语言，名称源于 全世界无产阶级和劳动人民的伟大导师 卡尔·马克思（Karl Marx）。
+一门正在开发的编程语言，名称源于 全世界无产阶级和劳动人民的伟大导师 卡尔·马克思（Karl Marx）。
 
-目前支持的语句有：
+语法示例如下：
 
-- 条件语句 `if`
-- 循环语句 `while`
-- 赋值语句
-- 表达式语句
-
-数据类型有：
-
-- `int`
-- `bool`
-
-运算符有：
-
-```
-+ - * / % ( ) > < >= <= == !=
-```
-
-由于尚未支持函数，表达式语句讲被求值输出。
-
-样例程序如下：
-
-```
-i = 0; // this is a comment
-s = 0;
-while i <= 10 {
-    i = i + 1;
-    s = s + i;
+```karl
+func fib(n: int) : int {
+    if (n == 1 || n == 0) {
+        return 1;
+    }
+    return fib(n - 1) + fib(n - 2)
 }
-s;
+
+func main() : void {
+    var a: int = 10, i: int = 0;
+    while (i <= n) {
+        i = i + 1;
+        print(fib(i));
+    }
+}
 ```
-
-输出：`66`
-
-若要使用 Karl，可将使用命令行运行解释器，如使用 Windows x86-64 PowerShell（解释器 `karl-x86-64.exe` 和文件 `a.karl` 均在 PowerShell 目录下）：
-
-```
-PS ...> .\karl-x86-64.exe a.karl
-```
-
-使用其他操作系统请自行编译。

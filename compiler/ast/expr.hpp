@@ -2,6 +2,7 @@
 #define KARL_EXPR_HPP
 
 #include <string>
+#include <vector>
 
 namespace karl {
 
@@ -16,7 +17,9 @@ namespace karl {
         Binary,
         Prefix,
         FuncCall,
-        Assign
+        Assign,
+        ArrayIndex,
+        ArrayLiteral
     };
 
 
@@ -84,7 +87,7 @@ namespace karl {
     };
 
     struct IdentifierExpr : public Expr {
-        std::string identidier;
+        std::string identifier;
 
         IdentifierExpr(std::string _identifier, int _line, int _column);
         ExprType type() override;
@@ -107,8 +110,33 @@ namespace karl {
         ~CharExpr() override;
     };
 
+    struct TrueExpr : public Expr {
+        TrueExpr(int _line, int _column);
+        ExprType type() override;
+        ~TrueExpr() override;
+    };
 
 
+    struct FalseExpr : public Expr {
+        FalseeExpr(int _line, int _column);
+        ExprType type() override;
+        ~FalseExpr() override;
+    };
+
+    struct StringExpr : public Expr {
+        std::string value;
+
+        StringExpr(std::string _value, int _line, int _column);
+        ExprType type() override;
+        ~StringExpr() override;
+    };
+
+    struct FuncCallExpr : public Expr {
+        Expr *id;
+        std::vector<Expr *> args;
+
+        FuncCallExpr()
+    };
 } // karl
 
 #endif //KARL_EXPR_HPP
