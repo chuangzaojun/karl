@@ -8,18 +8,18 @@ namespace karl {
 
     enum class ExprType {
         _,
-        Identifier,
-        Int,
-        Char,
-        True,
-        False,
-        String,
-        Binary,
-        Prefix,
-        FuncCall,
-        Assign,
-        ArrayIndex,
-        ArrayLiteral
+        Identifier, // done
+        Int, // done
+        Char, // done
+        True, // done
+        False, // done
+        String, // done
+        Binary,  // done
+        Prefix, // done
+        FuncCall, // done
+        Assign, // done
+        ArrayIndex, // done
+        ArrayLiteral // done
     };
 
 
@@ -72,7 +72,7 @@ namespace karl {
         OpType op;
         Expr *right;
 
-        BinaryExpr(Expr *_left, OpType _type, Expr *_right, int _line, int _column);
+        BinaryExpr(Expr *_left, OpType _op, Expr *_right, int _line, int _column);
         ExprType type() override;
         ~BinaryExpr() override;
     };
@@ -81,7 +81,7 @@ namespace karl {
         OpType op;
         Expr *right;
 
-        PrefixExpr(OpType _type, Expr *_right, int _line, int _column);
+        PrefixExpr(OpType _op, Expr *_right, int _line, int _column);
         ExprType type() override;
         ~PrefixExpr() override;
     };
@@ -118,7 +118,7 @@ namespace karl {
 
 
     struct FalseExpr : public Expr {
-        FalseeExpr(int _line, int _column);
+        FalseExpr(int _line, int _column);
         ExprType type() override;
         ~FalseExpr() override;
     };
@@ -133,9 +133,37 @@ namespace karl {
 
     struct FuncCallExpr : public Expr {
         Expr *id;
-        std::vector<Expr *> args;
+        std::vector<Expr *> arguments;
 
-        FuncCallExpr()
+        FuncCallExpr(Expr *_id, int _line, int _column);
+        ExprType type() override;
+        ~FuncCallExpr() override;
+    };
+
+    struct AssignExpr : public Expr {
+        Expr *left;
+        Expr *right;
+
+        AssignExpr(Expr *_left, Expr *_right, int _line, int _column);
+        ExprType type() override;
+        ~AssignExpr();
+    };
+
+    struct ArrayIndexExpr : public Expr {
+        Expr *array;
+        Expr *index;
+
+        AssignExpr(Expr *_array, Expr *_index, int _line, int _column);
+        ExprType type() override;
+        ~ArrayIndexExpr();
+    };
+
+    struct ArrayLiteralExpr : public Expr {
+        std::vector<Expr *> exprs;
+
+        ArrayLiteralExpr(int _line, int _column);
+        ExprType type() override;
+        ~ArrayLiteralExpr() override;
     };
 } // karl
 
