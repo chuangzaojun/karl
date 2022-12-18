@@ -56,6 +56,9 @@ namespace karl {
         Elif,
         Else,
         While,
+        Break,
+        Continue,
+        Return,
 
         // type
         Int,

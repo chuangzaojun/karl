@@ -73,12 +73,6 @@ build CMakeFiles/karl.dir/error/error.cpp.obj: CXX_COMPILER__karl_Debug D$:/Code
   OBJECT_DIR = CMakeFiles\karl.dir
   OBJECT_FILE_DIR = CMakeFiles\karl.dir\error
 
-build CMakeFiles/karl.dir/compiler/ast/program.cpp.obj: CXX_COMPILER__karl_Debug D$:/Code/karl/compiler/ast/program.cpp || cmake_object_order_depends_target_karl
-  DEP_FILE = CMakeFiles\karl.dir\compiler\ast\program.cpp.obj.d
-  FLAGS = -g -std=gnu++20
-  OBJECT_DIR = CMakeFiles\karl.dir
-  OBJECT_FILE_DIR = CMakeFiles\karl.dir\compiler\ast
-
 build CMakeFiles/karl.dir/compiler/ast/stmt.cpp.obj: CXX_COMPILER__karl_Debug D$:/Code/karl/compiler/ast/stmt.cpp || cmake_object_order_depends_target_karl
   DEP_FILE = CMakeFiles\karl.dir\compiler\ast\stmt.cpp.obj.d
   FLAGS = -g -std=gnu++20
@@ -91,8 +85,8 @@ build CMakeFiles/karl.dir/compiler/ast/expr.cpp.obj: CXX_COMPILER__karl_Debug D$
   OBJECT_DIR = CMakeFiles\karl.dir
   OBJECT_FILE_DIR = CMakeFiles\karl.dir\compiler\ast
 
-build CMakeFiles/karl.dir/compiler/ast/type.cpp.obj: CXX_COMPILER__karl_Debug D$:/Code/karl/compiler/ast/type.cpp || cmake_object_order_depends_target_karl
-  DEP_FILE = CMakeFiles\karl.dir\compiler\ast\type.cpp.obj.d
+build CMakeFiles/karl.dir/compiler/ast/object_type.cpp.obj: CXX_COMPILER__karl_Debug D$:/Code/karl/compiler/ast/object_type.cpp || cmake_object_order_depends_target_karl
+  DEP_FILE = CMakeFiles\karl.dir\compiler\ast\object_type.cpp.obj.d
   FLAGS = -g -std=gnu++20
   OBJECT_DIR = CMakeFiles\karl.dir
   OBJECT_FILE_DIR = CMakeFiles\karl.dir\compiler\ast
@@ -105,7 +99,7 @@ build CMakeFiles/karl.dir/compiler/ast/type.cpp.obj: CXX_COMPILER__karl_Debug D$
 #############################################
 # Link the executable karl.exe
 
-build karl.exe: CXX_EXECUTABLE_LINKER__karl_Debug CMakeFiles/karl.dir/main.cpp.obj CMakeFiles/karl.dir/compiler/lexer/lexer.cpp.obj CMakeFiles/karl.dir/compiler/lexer/token.cpp.obj CMakeFiles/karl.dir/error/error.cpp.obj CMakeFiles/karl.dir/compiler/ast/program.cpp.obj CMakeFiles/karl.dir/compiler/ast/stmt.cpp.obj CMakeFiles/karl.dir/compiler/ast/expr.cpp.obj CMakeFiles/karl.dir/compiler/ast/type.cpp.obj
+build karl.exe: CXX_EXECUTABLE_LINKER__karl_Debug CMakeFiles/karl.dir/main.cpp.obj CMakeFiles/karl.dir/compiler/lexer/lexer.cpp.obj CMakeFiles/karl.dir/compiler/lexer/token.cpp.obj CMakeFiles/karl.dir/error/error.cpp.obj CMakeFiles/karl.dir/compiler/ast/stmt.cpp.obj CMakeFiles/karl.dir/compiler/ast/expr.cpp.obj CMakeFiles/karl.dir/compiler/ast/object_type.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\karl.dir
