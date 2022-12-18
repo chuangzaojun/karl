@@ -200,12 +200,12 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "object/object.cpp",
+			"path" : "compiler/ast/type.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
-			"path" : "object/object.hpp",
+			"path" : "compiler/ast/type.hpp",
 			"sourceGroupIndex" : 1
 		}
 	],
