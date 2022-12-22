@@ -16,6 +16,10 @@ namespace karl {
         FuncCall,
         ArrayIndex,
         ArrayLiteral,
+        Int,
+        Char,
+        String,
+        Bool
     };
 
     enum class OpType {
@@ -50,7 +54,7 @@ namespace karl {
         ObjectType *objectType;
 
         virtual ExprType exprType() = 0;
-        virtual ~Expr() = 0;
+        virtual ~Expr();
     };
 
     struct BinaryExpr : public Expr {
@@ -91,7 +95,7 @@ namespace karl {
 
     struct FuncCallExpr : public Expr {
         Expr *name;
-        std::vector<Expr *> parameters;
+        std::vector<Expr *> argument;
 
         FuncCallExpr(Expr *name, int line, int column);
         ExprType exprType() override;
@@ -113,6 +117,38 @@ namespace karl {
         ArrayLiteralExpr(int line, int column);
         ExprType exprType() override;
         ~ArrayLiteralExpr() override;
+    };
+
+    struct IntExpr : public Expr {
+        int value;
+
+        IntExpr(int value, int line, int column);
+        ExprType exprType() override;
+        ~IntExpr() override;
+    };
+
+    struct CharExpr : public Expr {
+        char value;
+
+        CharExpr(char value, int line, int column);
+        ExprType exprType() override;
+        ~CharExpr() override;
+    };
+
+    struct StringExpr : public Expr {
+        std::string value;
+
+        StringExpr(std::string value, int line, int column);
+        ExprType exprType() override;
+        ~StringExpr() override;
+    };
+
+    struct BoolExpr : public Expr {
+        bool value;
+
+        BoolExpr(bool value, int line, int column);
+        ExprType exprType() override;
+        ~BoolExpr() override;
     };
 
 } // karl

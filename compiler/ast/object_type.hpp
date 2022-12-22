@@ -16,6 +16,17 @@ namespace karl {
     struct ObjectType {
         virtual SingleObjectType singleObjectType() = 0;
         virtual ObjectType *copy() = 0;
+        virtual ~ObjectType() = 0;
+    };
+
+    struct IntObject : public ObjectType {
+        SingleObjectType singleObjectType() override;
+        ObjectType * copy() override;
+        ~IntObject() override;
+    };
+
+    struct BoolObject : public ObjectType {
+
     };
 
 } // karl
