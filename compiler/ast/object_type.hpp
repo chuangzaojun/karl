@@ -21,12 +21,41 @@ namespace karl {
 
     struct IntObject : public ObjectType {
         SingleObjectType singleObjectType() override;
-        ObjectType * copy() override;
+        ObjectType *copy() override;
         ~IntObject() override;
     };
 
     struct BoolObject : public ObjectType {
+        SingleObjectType singleObjectType() override;
+        ObjectType *copy() override;
+        ~BoolObject() override;
+    };
 
+    struct StringObject : public ObjectType {
+        SingleObjectType singleObjectType() override;
+        ObjectType *copy() override;
+        ~StringObject() override;
+    };
+
+    struct CharObject : public ObjectType {
+        SingleObjectType singleObjectType() override;
+        ObjectType * copy() override;
+        ~CharObject() override;
+    };
+
+    struct VoidObject : public ObjectType {
+        SingleObjectType singleObjectType() override;
+        ObjectType * copy() override;
+        ~VoidObject() override;
+    };
+
+    struct ArrayObject : public ObjectType {
+        ObjectType *memberType;
+
+        ArrayObject(ObjectType *memberType);
+        SingleObjectType singleObjectType() override;
+        ObjectType * copy() override;
+        ~ArrayObject() override;
     };
 
 } // karl

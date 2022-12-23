@@ -47,6 +47,8 @@ namespace karl {
         std::vector<Expr *> parameters;
         Block *block;
 
+        ObjectType *objectType;
+
         FuncDefStmt(Expr *name, Block *block, int line, int column);
         StmtType stmtType() override;
         ~FuncDefStmt() override;
