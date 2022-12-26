@@ -162,4 +162,19 @@ namespace karl {
     }
 
     BoolExpr::~BoolExpr() {}
+
+    TypeConversionExpr::TypeConversionExpr(SingleObjectType targetType, Expr *expr, int line, int column) {
+        this->targetType = targetType;
+        this->expr = expr;
+        this->line = line;
+        this->column = column;
+    }
+
+    ExprType TypeConversionExpr::exprType() {
+        return ExprType::TypeConversion;
+    }
+
+    TypeConversionExpr::~TypeConversionExpr() {
+        delete expr;
+    }
 } // karl

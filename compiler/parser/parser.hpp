@@ -24,6 +24,7 @@ namespace karl {
         Stmt *parseBreakStmt();
         Stmt *parseContinueStmt();
         Stmt *parseReturnStmt();
+        Stmt *parseExprStmt();
 
         Block *parseBlock();
 
@@ -40,6 +41,12 @@ namespace karl {
         Expr *parseExpr0();
 
         Expr *parseIdentifier();
+        Expr *parseArrayIndexExpr();
+        Expr *parseFuncCallExpr();
+        Expr *parseIntExpr();
+        Expr *parseBoolExpr();
+        Expr *parseCharExpr();
+        Expr *parseStringExpr();
 
         ObjectType *parseType();
         ObjectType *parseSingleType();

@@ -19,7 +19,8 @@ namespace karl {
         Int,
         Char,
         String,
-        Bool
+        Bool,
+        TypeConversion
     };
 
     enum class OpType {
@@ -149,6 +150,15 @@ namespace karl {
         BoolExpr(bool value, int line, int column);
         ExprType exprType() override;
         ~BoolExpr() override;
+    };
+
+    struct TypeConversionExpr : public Expr {
+        SingleObjectType targetType;
+        Expr *expr;
+
+        TypeConversionExpr(SingleObjectType targetType, Expr *expr, int line, int column);
+        ExprType exprType() override;
+        ~TypeConversionExpr() override;
     };
 
 } // karl
