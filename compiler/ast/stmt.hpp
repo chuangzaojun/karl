@@ -45,6 +45,7 @@ namespace karl {
     struct FuncDefStmt : public Stmt {
         Expr *name;
         std::vector<Expr *> parameters;
+        std::vector<ObjectType *> parameterTypes;
         Block *block;
 
         ObjectType *objectType;

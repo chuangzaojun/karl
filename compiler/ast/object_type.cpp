@@ -51,8 +51,9 @@ namespace karl {
 
     VoidObject::~VoidObject() {}
 
-    ArrayObject::ArrayObject(ObjectType *memberType) {
+    ArrayObject::ArrayObject(ObjectType *memberType, int memberNum) {
         this->memberType = memberType;
+        this->memberNum = memberNum;
     }
 
     SingleObjectType ArrayObject::singleObjectType() {
@@ -60,7 +61,7 @@ namespace karl {
     }
 
     ObjectType *ArrayObject::copy() {
-        return new ArrayObject(memberType->copy());
+        return new ArrayObject(memberType->copy(), memberNum);
     }
 
     ArrayObject::~ArrayObject() {

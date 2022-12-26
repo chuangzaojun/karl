@@ -51,8 +51,9 @@ namespace karl {
 
     struct ArrayObject : public ObjectType {
         ObjectType *memberType;
+        int memberNum;
 
-        ArrayObject(ObjectType *memberType);
+        ArrayObject(ObjectType *memberType, int memberNum);
         SingleObjectType singleObjectType() override;
         ObjectType * copy() override;
         ~ArrayObject() override;
