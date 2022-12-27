@@ -1,9 +1,12 @@
 #include "compiler/parser/parser.hpp"
+#include <iostream>
 #include <vector>
+#include <map>
 
 using namespace karl;
 
 int main() {
+
     std::string src = "func fib(n: int) : int {\n"
                       "    if (n == 1 || n == 0) {\n"
                       "        return 1;\n"

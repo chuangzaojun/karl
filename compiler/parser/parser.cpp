@@ -1,32 +1,9 @@
 #include "parser.hpp"
 #include "../../error/error.hpp"
 #include <map>
+#include <iostream>
 
 namespace karl {
-
-    std::map<TokenType, OpType> tokenToOpType = {
-            {TokenType::Assign, OpType::Assign},
-            {TokenType::Minus, OpType::Minus},
-            {TokenType::Add, OpType::Add},
-            {TokenType::Mul, OpType::Mul},
-            {TokenType::Div, OpType::Div},
-            {TokenType::Mod, OpType::Mod},
-            {TokenType::LessThan, OpType::LessThan},
-            {TokenType::LessEqual, OpType::LessEqual},
-            {TokenType::GreaterThan, OpType::GreaterThan},
-            {TokenType::GreaterEqual, OpType::GreaterEqual},
-            {TokenType::Equal, OpType::Equal},
-            {TokenType::NotEqual, OpType::NotEqual},
-            {TokenType::And, OpType::And},
-            {TokenType::Or, OpType::Or},
-            {TokenType::Not, OpType::Not},
-            {TokenType::BAnd, OpType::BAnd},
-            {TokenType::BOr, OpType::BOr},
-            {TokenType::BNot, OpType::BNot},
-            {TokenType::BXor, OpType::BXor},
-            {TokenType::LMove, OpType::LMove},
-            {TokenType::RMove, OpType::RMove}
-    };
 
     Parser::Parser(karl::Lexer *lexer) {
         this->lexer = lexer;
@@ -225,6 +202,7 @@ namespace karl {
             stmt->expr = parseExpr();
         }
         expect(TokenType::Semicolon);
+        return stmt;
     }
 
     Stmt *Parser::parseExprStmt() {
@@ -346,6 +324,30 @@ namespace karl {
         return expr;
     }
 
+    std::map<TokenType, OpType> tokenToOpType = {
+            {TokenType::Assign, OpType::Assign},
+            {TokenType::Minus, OpType::Minus},
+            {TokenType::Add, OpType::Add},
+            {TokenType::Mul, OpType::Mul},
+            {TokenType::Div, OpType::Div},
+            {TokenType::Mod, OpType::Mod},
+            {TokenType::LessThan, OpType::LessThan},
+            {TokenType::LessEqual, OpType::LessEqual},
+            {TokenType::GreaterThan, OpType::GreaterThan},
+            {TokenType::GreaterEqual, OpType::GreaterEqual},
+            {TokenType::Equal, OpType::Equal},
+            {TokenType::NotEqual, OpType::NotEqual},
+            {TokenType::And, OpType::And},
+            {TokenType::Or, OpType::Or},
+            {TokenType::Not, OpType::Not},
+            {TokenType::BAnd, OpType::BAnd},
+            {TokenType::BOr, OpType::BOr},
+            {TokenType::BNot, OpType::BNot},
+            {TokenType::BXor, OpType::BXor},
+            {TokenType::LMove, OpType::LMove},
+            {TokenType::RMove, OpType::RMove}
+    };
+
     Expr *Parser::parseExpr1() {
         switch (curToken->type) {
             case TokenType::Minus:
@@ -365,10 +367,9 @@ namespace karl {
         Expr *expr = parseExpr1();
         while (curToken->type == TokenType::Mul || curToken->type == TokenType::Div ||
                curToken->type == TokenType::Mod) {
-            int line = curToken->line;
-            int column = curToken->column;
+            expr = new BinaryExpr(expr, tokenToOpType[curToken->type], nullptr, curToken->line, curToken->column);
             advance();
-            expr = new BinaryExpr(expr, tokenToOpType[curToken->type], parseExpr1(), line, column);
+            ((BinaryExpr *) expr)->right = parseExpr1();
         }
         return expr;
     }
@@ -376,10 +377,9 @@ namespace karl {
     Expr *Parser::parseExpr3() {
         Expr *expr = parseExpr2();
         while (curToken->type == TokenType::Add || curToken->type == TokenType::Minus) {
-            int line = curToken->line;
-            int column = curToken->column;
+            expr = new BinaryExpr(expr, tokenToOpType[curToken->type], nullptr, curToken->line, curToken->column);
             advance();
-            expr = new BinaryExpr(expr, tokenToOpType[curToken->type], parseExpr2(), line, column);
+            ((BinaryExpr *) expr)->right = parseExpr2();
         }
         return expr;
     }
@@ -387,10 +387,9 @@ namespace karl {
     Expr *Parser::parseExpr4() {
         Expr *expr = parseExpr3();
         while (curToken->type == TokenType::LMove || curToken->type == TokenType::RMove) {
-            int line = curToken->line;
-            int column = curToken->column;
+            expr = new BinaryExpr(expr, tokenToOpType[curToken->type], nullptr, curToken->line, curToken->column);
             advance();
-            expr = new BinaryExpr(expr, tokenToOpType[curToken->type], parseExpr3(), line, column);
+            ((BinaryExpr *) expr)->right = parseExpr3();
         }
         return expr;
     }
@@ -399,10 +398,9 @@ namespace karl {
         Expr *expr = parseExpr4();
         while (curToken->type == TokenType::LessThan || curToken->type == TokenType::LessEqual ||
                curToken->type == TokenType::GreaterThan || curToken->type == TokenType::GreaterEqual) {
-            int line = curToken->line;
-            int column = curToken->column;
+            expr = new BinaryExpr(expr, tokenToOpType[curToken->type], nullptr, curToken->line, curToken->column);
             advance();
-            expr = new BinaryExpr(expr, tokenToOpType[curToken->type], parseExpr4(), line, column);
+            ((BinaryExpr *) expr)->right = parseExpr4();
         }
         return expr;
     }
@@ -410,10 +408,9 @@ namespace karl {
     Expr *Parser::parseExpr6() {
         Expr *expr = parseExpr5();
         while (curToken->type == TokenType::Equal || curToken->type == TokenType::NotEqual) {
-            int line = curToken->line;
-            int column = curToken->column;
+            expr = new BinaryExpr(expr, tokenToOpType[curToken->type], nullptr, curToken->line, curToken->column);
             advance();
-            expr = new BinaryExpr(expr, tokenToOpType[curToken->type], parseExpr5(), line, column);
+            ((BinaryExpr *) expr)->right = parseExpr5();
         }
         return expr;
     }
@@ -421,10 +418,9 @@ namespace karl {
     Expr *Parser::parseExpr7() {
         Expr *expr = parseExpr6();
         while (curToken->type == TokenType::BAnd) {
-            int line = curToken->line;
-            int column = curToken->column;
+            expr = new BinaryExpr(expr, tokenToOpType[curToken->type], nullptr, curToken->line, curToken->column);
             advance();
-            expr = new BinaryExpr(expr, tokenToOpType[curToken->type], parseExpr6(), line, column);
+            ((BinaryExpr *) expr)->right = parseExpr6();
         }
         return expr;
     }
@@ -432,10 +428,9 @@ namespace karl {
     Expr *Parser::parseExpr8() {
         Expr *expr = parseExpr7();
         while (curToken->type == TokenType::BXor) {
-            int line = curToken->line;
-            int column = curToken->column;
+            expr = new BinaryExpr(expr, tokenToOpType[curToken->type], nullptr, curToken->line, curToken->column);
             advance();
-            expr = new BinaryExpr(expr, tokenToOpType[curToken->type], parseExpr7(), line, column);
+            ((BinaryExpr *) expr)->right = parseExpr7();
         }
         return expr;
     }
@@ -443,10 +438,9 @@ namespace karl {
     Expr *Parser::parseExpr9() {
         Expr *expr = parseExpr8();
         while (curToken->type == TokenType::BOr) {
-            int line = curToken->line;
-            int column = curToken->column;
+            expr = new BinaryExpr(expr, tokenToOpType[curToken->type], nullptr, curToken->line, curToken->column);
             advance();
-            expr = new BinaryExpr(expr, tokenToOpType[curToken->type], parseExpr8(), line, column);
+            ((BinaryExpr *) expr)->right = parseExpr8();
         }
         return expr;
     }
@@ -454,10 +448,9 @@ namespace karl {
     Expr *Parser::parseExpr10() {
         Expr *expr = parseExpr9();
         while (curToken->type == TokenType::And) {
-            int line = curToken->line;
-            int column = curToken->column;
+            expr = new BinaryExpr(expr, tokenToOpType[curToken->type], nullptr, curToken->line, curToken->column);
             advance();
-            expr = new BinaryExpr(expr, tokenToOpType[curToken->type], parseExpr9(), line, column);
+            ((BinaryExpr *) expr)->right = parseExpr9();
         }
         return expr;
     }
@@ -465,10 +458,9 @@ namespace karl {
     Expr *Parser::parseExpr11() {
         Expr *expr = parseExpr10();
         while (curToken->type == TokenType::Or) {
-            int line = curToken->line;
-            int column = curToken->column;
+            expr = new BinaryExpr(expr, tokenToOpType[curToken->type], nullptr, curToken->line, curToken->column);
             advance();
-            expr = new BinaryExpr(expr, tokenToOpType[curToken->type], parseExpr10(), line, column);
+            ((BinaryExpr *) expr)->right = parseExpr10();
         }
         return expr;
     }
