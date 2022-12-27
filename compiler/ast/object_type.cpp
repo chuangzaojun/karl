@@ -67,4 +67,6 @@ namespace karl {
     ArrayObject::~ArrayObject() {
         delete memberType;
     }
+
+    ObjectType::~ObjectType() {}
 } // karl

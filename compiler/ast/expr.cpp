@@ -53,6 +53,7 @@ namespace karl {
     }
 
     IdentifierExpr::IdentifierExpr(std::string identifier, int line, int column) {
+        this->identifier = identifier;
         this->line = line;
         this->column = column;
     }
@@ -75,7 +76,7 @@ namespace karl {
 
     FuncCallExpr::~FuncCallExpr() {
         delete name;
-        for (Expr *i: parameters) {
+        for (Expr *i: arguments) {
             delete i;
         }
     }
@@ -92,7 +93,7 @@ namespace karl {
     }
 
     ArrayIndexExpr::~ArrayIndexExpr() {
-        delete array
+        delete array;
         delete index;
     }
 

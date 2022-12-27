@@ -23,7 +23,7 @@ namespace karl {
         int column;
 
         virtual StmtType stmtType() = 0;
-        virtual ~Stmt() = 0;
+        virtual ~Stmt();
     };
 
     struct Block : public Stmt {

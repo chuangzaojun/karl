@@ -1,18 +1,25 @@
-#include "compiler/lexer/lexer.hpp"
+#include "compiler/parser/parser.hpp"
 #include <vector>
 
 using namespace karl;
 
 int main() {
-    Lexer *l = new Lexer("\"......\"\n"
-                         "123\n"
-                         "' '\n"
-                         "{[()]}\n"
-                         "if else for func\n"
-                         "jdd\n");
-    std::vector<Token *> tokens;
-    for (int i = 1; i <= 20; i++) {
-        tokens.push_back(l->nextToken());
-    }
+    std::string src = "func fib(n: int) : int {\n"
+                      "    if (n == 1 || n == 0) {\n"
+                      "        return 1;\n"
+                      "    }\n"
+                      "    return fib(n - 1) + fib(n - 2);\n"
+                      "}\n"
+                      "\n"
+                      "func main() : void {\n"
+                      "    var a: int = 10, i: int = 0;\n"
+                      "    while (i <= n) {\n"
+                      "        i = i + 1;\n"
+                      "        print(fib(i));\n"
+                      "    }\n"
+                      "}\n";
+    Lexer *lexer = new Lexer(src);
+    Parser *parser = new Parser(lexer);
+    Program *program = parser->parseProgram();
     return 0;
 }

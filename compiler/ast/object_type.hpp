@@ -16,7 +16,7 @@ namespace karl {
     struct ObjectType {
         virtual SingleObjectType singleObjectType() = 0;
         virtual ObjectType *copy() = 0;
-        virtual ~ObjectType() = 0;
+        virtual ~ObjectType();
     };
 
     struct IntObject : public ObjectType {

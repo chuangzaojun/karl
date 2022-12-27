@@ -3,6 +3,31 @@
 #include <map>
 
 namespace karl {
+
+    std::map<TokenType, OpType> tokenToOpType = {
+            {TokenType::Assign, OpType::Assign},
+            {TokenType::Minus, OpType::Minus},
+            {TokenType::Add, OpType::Add},
+            {TokenType::Mul, OpType::Mul},
+            {TokenType::Div, OpType::Div},
+            {TokenType::Mod, OpType::Mod},
+            {TokenType::LessThan, OpType::LessThan},
+            {TokenType::LessEqual, OpType::LessEqual},
+            {TokenType::GreaterThan, OpType::GreaterThan},
+            {TokenType::GreaterEqual, OpType::GreaterEqual},
+            {TokenType::Equal, OpType::Equal},
+            {TokenType::NotEqual, OpType::NotEqual},
+            {TokenType::And, OpType::And},
+            {TokenType::Or, OpType::Or},
+            {TokenType::Not, OpType::Not},
+            {TokenType::BAnd, OpType::BAnd},
+            {TokenType::BOr, OpType::BOr},
+            {TokenType::BNot, OpType::BNot},
+            {TokenType::BXor, OpType::BXor},
+            {TokenType::LMove, OpType::LMove},
+            {TokenType::RMove, OpType::RMove}
+    };
+
     Parser::Parser(karl::Lexer *lexer) {
         this->lexer = lexer;
         this->curToken = nullptr;
@@ -37,7 +62,7 @@ namespace karl {
         if (curToken->type == type) {
             advance();
         } else {
-            grammarError(type,curToken);
+            grammarError(type, curToken);
         }
     }
 
@@ -89,6 +114,9 @@ namespace karl {
             case TokenType::String:
                 advance();
                 return new StringObject();
+            case TokenType::Void:
+                advance();
+                return new VoidObject();
         }
         grammarError(curToken);
         return nullptr;
@@ -102,9 +130,9 @@ namespace karl {
 
     Stmt *Parser::parseVarDefStmt() {
         VarDefStmt *stmt = new VarDefStmt(curToken->line, curToken->column);
-        expect(TokenType::Func);
+        expect(TokenType::Var);
         while (true) {
-            stmt->vars.push_back(parseExpr());
+            stmt->vars.push_back(parseIdentifier());
             expect(TokenType::Colon);
             stmt->types.push_back(parseType());
             if (curToken->type == TokenType::Assign) {
@@ -135,11 +163,13 @@ namespace karl {
                 if (curToken->type == TokenType::Comma) {
                     advance();
                 } else {
-                    expect(TokenType::RParen);
                     break;
                 }
             }
         }
+        expect(TokenType::RParen);
+        expect(TokenType::Colon);
+        stmt->objectType = parseType();
         stmt->block = parseBlock();
         return stmt;
     }
@@ -190,7 +220,7 @@ namespace karl {
 
     Stmt *Parser::parseReturnStmt() {
         ReturnStmt *stmt = new ReturnStmt(nullptr, curToken->line, curToken->column);
-        expect(TokenType::Continue);
+        expect(TokenType::Return);
         if (curToken->type != TokenType::Semicolon) {
             stmt->expr = parseExpr();
         }
@@ -201,6 +231,7 @@ namespace karl {
         ExprStmt *stmt = new ExprStmt(parseExpr(), 0, 0);
         stmt->line = stmt->expr->line;
         stmt->column = stmt->expr->column;
+        expect(TokenType::Semicolon);
         return stmt;
     }
 
@@ -233,6 +264,10 @@ namespace karl {
             case TokenType::True:
             case TokenType::False:
                 return parseBoolExpr();
+            case TokenType::Int:
+            case TokenType::Char:
+            case TokenType::String:
+                return parseTypeConversionExpr();
         }
         return nullptr;
     }
@@ -256,7 +291,7 @@ namespace karl {
         expect(TokenType::LParen);
         if (curToken->type != TokenType::RParen) {
             while (curToken->type != TokenType::RParen) {
-                expr->argument.push_back(parseExpr());
+                expr->arguments.push_back(parseExpr());
                 if (curToken->type == TokenType::Comma) {
                     advance();
                 }
@@ -294,5 +329,184 @@ namespace karl {
         return expr;
     }
 
+    Expr *Parser::parseTypeConversionExpr() {
+        TypeConversionExpr *expr = new TypeConversionExpr(SingleObjectType::_, nullptr, curToken->line,
+                                                          curToken->column);
+        if (curToken->type == TokenType::Int) {
+            expr->targetType = SingleObjectType::Int;
+        } else if (curToken->type == TokenType::Char) {
+            expr->targetType = SingleObjectType::Char;
+        } else {
+            expect(TokenType::String);
+            expr->targetType = SingleObjectType::String;
+        }
+        expect(TokenType::LParen);
+        expr->expr = parseExpr();
+        expect(TokenType::RParen);
+        return expr;
+    }
+
+    Expr *Parser::parseExpr1() {
+        switch (curToken->type) {
+            case TokenType::Minus:
+            case TokenType::Not:
+            case TokenType::BNot:
+            case TokenType::Add:
+                PrefixExpr *expr = new PrefixExpr(tokenToOpType[curToken->type], nullptr, curToken->line,
+                                                  curToken->column);
+                advance();
+                expr->right = parseExpr0();
+                return expr;
+        }
+        return parseExpr0();
+    }
+
+    Expr *Parser::parseExpr2() {
+        Expr *expr = parseExpr1();
+        while (curToken->type == TokenType::Mul || curToken->type == TokenType::Div ||
+               curToken->type == TokenType::Mod) {
+            int line = curToken->line;
+            int column = curToken->column;
+            advance();
+            expr = new BinaryExpr(expr, tokenToOpType[curToken->type], parseExpr1(), line, column);
+        }
+        return expr;
+    }
+
+    Expr *Parser::parseExpr3() {
+        Expr *expr = parseExpr2();
+        while (curToken->type == TokenType::Add || curToken->type == TokenType::Minus) {
+            int line = curToken->line;
+            int column = curToken->column;
+            advance();
+            expr = new BinaryExpr(expr, tokenToOpType[curToken->type], parseExpr2(), line, column);
+        }
+        return expr;
+    }
+
+    Expr *Parser::parseExpr4() {
+        Expr *expr = parseExpr3();
+        while (curToken->type == TokenType::LMove || curToken->type == TokenType::RMove) {
+            int line = curToken->line;
+            int column = curToken->column;
+            advance();
+            expr = new BinaryExpr(expr, tokenToOpType[curToken->type], parseExpr3(), line, column);
+        }
+        return expr;
+    }
+
+    Expr *Parser::parseExpr5() {
+        Expr *expr = parseExpr4();
+        while (curToken->type == TokenType::LessThan || curToken->type == TokenType::LessEqual ||
+               curToken->type == TokenType::GreaterThan || curToken->type == TokenType::GreaterEqual) {
+            int line = curToken->line;
+            int column = curToken->column;
+            advance();
+            expr = new BinaryExpr(expr, tokenToOpType[curToken->type], parseExpr4(), line, column);
+        }
+        return expr;
+    }
+
+    Expr *Parser::parseExpr6() {
+        Expr *expr = parseExpr5();
+        while (curToken->type == TokenType::Equal || curToken->type == TokenType::NotEqual) {
+            int line = curToken->line;
+            int column = curToken->column;
+            advance();
+            expr = new BinaryExpr(expr, tokenToOpType[curToken->type], parseExpr5(), line, column);
+        }
+        return expr;
+    }
+
+    Expr *Parser::parseExpr7() {
+        Expr *expr = parseExpr6();
+        while (curToken->type == TokenType::BAnd) {
+            int line = curToken->line;
+            int column = curToken->column;
+            advance();
+            expr = new BinaryExpr(expr, tokenToOpType[curToken->type], parseExpr6(), line, column);
+        }
+        return expr;
+    }
+
+    Expr *Parser::parseExpr8() {
+        Expr *expr = parseExpr7();
+        while (curToken->type == TokenType::BXor) {
+            int line = curToken->line;
+            int column = curToken->column;
+            advance();
+            expr = new BinaryExpr(expr, tokenToOpType[curToken->type], parseExpr7(), line, column);
+        }
+        return expr;
+    }
+
+    Expr *Parser::parseExpr9() {
+        Expr *expr = parseExpr8();
+        while (curToken->type == TokenType::BOr) {
+            int line = curToken->line;
+            int column = curToken->column;
+            advance();
+            expr = new BinaryExpr(expr, tokenToOpType[curToken->type], parseExpr8(), line, column);
+        }
+        return expr;
+    }
+
+    Expr *Parser::parseExpr10() {
+        Expr *expr = parseExpr9();
+        while (curToken->type == TokenType::And) {
+            int line = curToken->line;
+            int column = curToken->column;
+            advance();
+            expr = new BinaryExpr(expr, tokenToOpType[curToken->type], parseExpr9(), line, column);
+        }
+        return expr;
+    }
+
+    Expr *Parser::parseExpr11() {
+        Expr *expr = parseExpr10();
+        while (curToken->type == TokenType::Or) {
+            int line = curToken->line;
+            int column = curToken->column;
+            advance();
+            expr = new BinaryExpr(expr, tokenToOpType[curToken->type], parseExpr10(), line, column);
+        }
+        return expr;
+    }
+
+    Expr *Parser::parseExpr12() {
+        Expr *expr = parseExpr11();
+        if (curToken->type != TokenType::Assign) {
+            return expr;
+        }
+        int line = curToken->line;
+        int column = curToken->column;
+        advance();
+        return new AssignExpr(expr, parseExpr11(), line, column);
+    }
+
+    Expr *Parser::parseArrayLiteralExpr() {
+        ArrayLiteralExpr *expr = new ArrayLiteralExpr(curToken->line, curToken->column);
+        expect(TokenType::LBracket);
+        if (curToken->type != TokenType::RBracket) {
+            while (curToken->type != TokenType::RBracket) {
+                expr->exprs.push_back(parseExpr());
+                if (curToken->type == TokenType::Comma) {
+                    advance();
+                } else {
+                    advance();
+                    break;
+                }
+            }
+        }
+        expect(TokenType::RBracket);
+        return expr;
+    }
+
+    Expr *Parser::parseExpr() {
+        if (curToken->type == TokenType::LBracket) {
+            return parseArrayLiteralExpr();
+        }
+        return parseExpr12();
+    }
 
 } // karl

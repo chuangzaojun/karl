@@ -139,4 +139,6 @@ namespace karl {
     ReturnStmt::~ReturnStmt() {
         delete expr;
     }
+
+    Stmt::~Stmt() {}
 } // karl

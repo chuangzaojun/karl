@@ -29,6 +29,12 @@ namespace karl {
         Block *parseBlock();
 
         Expr *parseExpr();
+
+        Expr *parseArrayLiteralExpr();
+
+        Expr *parseExpr12();
+        Expr *parseExpr11();
+        Expr *parseExpr10();
         Expr *parseExpr9();
         Expr *parseExpr8();
         Expr *parseExpr7();
@@ -47,6 +53,7 @@ namespace karl {
         Expr *parseBoolExpr();
         Expr *parseCharExpr();
         Expr *parseStringExpr();
+        Expr *parseTypeConversionExpr();
 
         ObjectType *parseType();
         ObjectType *parseSingleType();

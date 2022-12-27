@@ -24,6 +24,7 @@ namespace karl {
     };
 
     enum class OpType {
+        _,
         Assign, // =
         Minus, // -
         Add, // +
@@ -96,7 +97,7 @@ namespace karl {
 
     struct FuncCallExpr : public Expr {
         Expr *name;
-        std::vector<Expr *> argument;
+        std::vector<Expr *> arguments;
 
         FuncCallExpr(Expr *name, int line, int column);
         ExprType exprType() override;

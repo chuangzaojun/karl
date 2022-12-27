@@ -6,22 +6,22 @@
 namespace karl {
 
     std::map<std::string, TokenType> keywords = {
-            {"true",   TokenType::True},
-            {"false",  TokenType::False},
-            {"var",    TokenType::Var},
-            {"func",   TokenType::Func},
-            {"if",     TokenType::If},
-            {"elif",   TokenType::Elif},
-            {"else",   TokenType::Else},
-            {"while",  TokenType::While},
-            {"break", TokenType::Break},
+            {"true",     TokenType::True},
+            {"false",    TokenType::False},
+            {"var",      TokenType::Var},
+            {"func",     TokenType::Func},
+            {"if",       TokenType::If},
+            {"elif",     TokenType::Elif},
+            {"else",     TokenType::Else},
+            {"while",    TokenType::While},
+            {"break",    TokenType::Break},
             {"continue", TokenType::Continue},
-            {"return", TokenType::Return},
-            {"int",    TokenType::Int},
-            {"bool",   TokenType::Bool},
-            {"string", TokenType::String},
-            {"char",   TokenType::Char},
-            {"void",   TokenType::Void}
+            {"return",   TokenType::Return},
+            {"int",      TokenType::Int},
+            {"bool",     TokenType::Bool},
+            {"string",   TokenType::String},
+            {"char",     TokenType::Char},
+            {"void",     TokenType::Void}
     };
 
     bool isWhiteSpace(char c) {
@@ -157,12 +157,14 @@ namespace karl {
                 next(1);
                 return newToken(TokenType::Semicolon);
             case ':':
+                next(1);
                 return newToken(TokenType::Colon);
             case '=':
                 if (test("==")) {
                     next(2);
                     return newToken(TokenType::Equal);
                 }
+                next(1);
                 return newToken(TokenType::Assign);
             case '<':
                 if (test("<<")) {
