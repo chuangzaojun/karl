@@ -60,7 +60,10 @@ namespace karl {
             case TokenType::Return:
                 return parseReturnStmt();
             case TokenType::LBrace:
-                return parseBlock();
+                return parseBlock(false);
+            case TokenType::Semicolon:
+                advance();
+                return parseStmt();
         }
         return parseExprStmt();
     }
@@ -147,7 +150,7 @@ namespace karl {
         expect(TokenType::RParen);
         expect(TokenType::Colon);
         stmt->objectType = parseType();
-        stmt->block = parseBlock();
+        stmt->block = parseBlock(false);
         return stmt;
     }
 
@@ -156,7 +159,7 @@ namespace karl {
         expect(TokenType::LParen);
         WhileStmt *stmt = new WhileStmt(parseExpr(), nullptr, curToken->line, curToken->column);
         expect(TokenType::RParen);
-        stmt->block = parseBlock();
+        stmt->block = parseBlock(true);
         return stmt;
     }
 
@@ -166,17 +169,17 @@ namespace karl {
         expect(TokenType::LParen);
         stmt->conditions.push_back(parseExpr());
         expect(TokenType::RParen);
-        stmt->blocks.push_back(parseBlock());
+        stmt->blocks.push_back(parseBlock(false));
         while (curToken->type == TokenType::Elif) {
             advance();
             expect(TokenType::LParen);
             stmt->conditions.push_back(parseExpr());
             expect(TokenType::RParen);
-            stmt->blocks.push_back(parseBlock());
+            stmt->blocks.push_back(parseBlock(false));
         }
         if (curToken->type == TokenType::Else) {
             advance();
-            stmt->blocks.push_back(parseBlock());
+            stmt->blocks.push_back(parseBlock(false));
         }
         return stmt;
     }
@@ -213,8 +216,8 @@ namespace karl {
         return stmt;
     }
 
-    Block *Parser::parseBlock() {
-        Block *block = new Block(curToken->line, curToken->column);
+    Block *Parser::parseBlock(bool isLoopBlock) {
+        Block *block = new Block(isLoopBlock, curToken->line, curToken->column);
         expect(TokenType::LBrace);
         while (curToken->type != TokenType::RBrace) {
             block->stmts.push_back(parseStmt());

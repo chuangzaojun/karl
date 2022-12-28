@@ -26,7 +26,7 @@ namespace karl {
         Stmt *parseReturnStmt();
         Stmt *parseExprStmt();
 
-        Block *parseBlock();
+        Block *parseBlock(bool isLoopBlock);
 
         Expr *parseExpr();
 

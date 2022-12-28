@@ -11,6 +11,8 @@ namespace karl {
     void grammarError(TokenType expectType, Token *readToken);
 
     void grammarError(Token *readToken);
+
+    void varNotFound(std::string var, int line, int column);
 } // karl
 
 #endif //KARL_ERROR_HPP

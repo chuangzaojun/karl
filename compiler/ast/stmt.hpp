@@ -28,8 +28,9 @@ namespace karl {
 
     struct Block : public Stmt {
         std::vector<Stmt *> stmts;
+        bool isLoopBlock;
 
-        Block(int line, int column);
+        Block(bool isLoopBlock, int line, int column);
         StmtType stmtType() override;
         ~Block() override;
     };

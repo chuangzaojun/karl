@@ -70,4 +70,9 @@ namespace karl {
         printf("Unmatched token at line %d, column %d", readToken->line, readToken->column);
         exit(0);
     }
+
+    void varNotFound(std::string var, int line, int column) {
+        printf("Cannot find the variable %s at line %d, column %d.\n", var.data(), line, column);
+        exit(0);
+    }
 } // karl

@@ -1,7 +1,8 @@
 #include "stmt.hpp"
 
 namespace karl {
-    Block::Block(int line, int column) {
+    Block::Block(bool isLoopBlock, int line, int column) {
+        this->isLoopBlock = isLoopBlock;
         this->line = line;
         this->column = column;
     }
