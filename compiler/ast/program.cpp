@@ -5,5 +5,7 @@ namespace karl {
         for (Stmt *i: stmts) {
             delete i;
         }
+        delete varTable;
+        delete funcTable;
     }
 } // karl

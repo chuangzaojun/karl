@@ -15,6 +15,7 @@ namespace karl {
         for (Stmt *i: stmts) {
             delete i;
         }
+        delete varTable;
     }
 
     ExprStmt::ExprStmt(Expr *expr, int line, int column) {

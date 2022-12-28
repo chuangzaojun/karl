@@ -71,8 +71,28 @@ namespace karl {
         exit(0);
     }
 
-    void varNotFound(std::string var, int line, int column) {
+    void varNotFoundError(std::string var, int line, int column) {
         printf("Cannot find the variable %s at line %d, column %d.\n", var.data(), line, column);
+        exit(0);
+    }
+
+    void varHasDefError(std::string var, int line, int column) {
+        printf("There has been a variable %s at line %d, column %d.\n", var.data(), line, column);
+        exit(0);
+    }
+
+    void funcNotFoundError(std::string func, int line, int column) {
+        printf("Cannot find the function %s at line %d, column %d.\n", func.data(), line, column);
+        exit(0);
+    }
+
+    void funcHasDefError(std::string func, int line, int column) {
+        printf("There has been a function %s at line %d, column %d.\n", func.data(), line, column);
+        exit(0);
+    }
+
+    void TypeError::invalidStmt(int line, int column) {
+        printf("Invalid statement at line %d, column %d.\n", line, column);
         exit(0);
     }
 } // karl

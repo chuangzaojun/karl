@@ -2,6 +2,7 @@
 #define KARL_STMT_HPP
 
 #include "expr.hpp"
+#include "var_table.hpp"
 
 namespace karl {
 
@@ -29,6 +30,7 @@ namespace karl {
     struct Block : public Stmt {
         std::vector<Stmt *> stmts;
         bool isLoopBlock;
+        VarTable *varTable;
 
         Block(bool isLoopBlock, int line, int column);
         StmtType stmtType() override;
