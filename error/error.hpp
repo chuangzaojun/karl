@@ -21,6 +21,7 @@ namespace karl {
     void funcHasDefError(std::string func, int line, int column);
 
     class TypeError {
+    public:
         static void invalidStmt(int line, int column);
     };
 } // karl
