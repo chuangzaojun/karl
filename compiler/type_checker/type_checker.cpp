@@ -25,7 +25,7 @@ namespace karl {
 
     void TypeChecker::checkGlobalVarDef(VarDefStmt *stmt) {
         for (int i = 0; i < stmt->vars.size(); i++) {
-            checkType(stmt->types[i]);
+            checkType(stmt->types[i], stmt->vars[i]->line, stmt->vars[i]->column);
             if (stmt->types[i]->singleObjectType() == SingleObjectType::Void) {
                 TypeError::typeNotAllowed(stmt->types[i], stmt->vars[i]->line, stmt->vars[i]->column);
             }
@@ -42,13 +42,15 @@ namespace karl {
     void TypeChecker::checkFuncDef(FuncDefStmt *stmt) {
         program->funcTable->set(((IdentifierExpr *) stmt->name)->identifier, stmt, stmt->line, stmt->column);
         for (int i = 0; i < stmt->parameters.size(); i++) {
-            checkType(stmt->parameterTypes[i]);
+            checkType(stmt->parameterTypes[i], stmt->parameters[i]->line, stmt->parameters[i]->column);
             if (stmt->parameterTypes[i]->singleObjectType() == SingleObjectType::Void) {
                 TypeError::typeNotAllowed(stmt->parameterTypes[i], stmt->parameters[i]->line, stmt->parameters[i]->column);
             }
+            stmt->block->varTable->set(((IdentifierExpr *) stmt->parameters[i])->identifier, stmt->parameterTypes[i], stmt->parameters[i]->line, stmt->parameters[i]->column);
         }
         returnValueType = stmt->objectType;
         curBlock = stmt->block;
+        returnValueType = stmt->objectType;
         checkBlock(program->varTable);
         curBlock = nullptr;
     }
@@ -205,6 +207,99 @@ namespace karl {
             case SingleObjectType::String:
                 expr->objectType = new StringObject();
                 break;
+        }
+    }
+
+    void TypeChecker::checkFuncCallExpr(FuncCallExpr *expr, VarTable *varTable) {
+        FuncDefStmt *func = program->funcTable->get(((IdentifierExpr *) expr->name)->identifier, expr->line, expr->column);
+        if (expr->arguments.size() != func->parameters.size()) {
+            TypeError::funcCallArgumentsNumNotMatch(func->parameters.size(), expr->arguments.size(), expr->line, expr->column);
+        }
+        for (int i = 0; i < expr->arguments.size(); i++) {
+            checkExpr(expr->arguments[i], varTable);
+            if (!expr->arguments[i]->objectType->isEqual(func->parameterTypes[i])) {
+                TypeError::typeNotMatch(func->parameterTypes[i], expr->arguments[i]->objectType, expr->arguments[i]->line, expr->arguments[i]->column);
+            }
+        }
+        expr->objectType = func->objectType->copy();
+    }
+
+    void TypeChecker::checkType(ObjectType *type, int line, int column) {
+        if (type->singleObjectType() == SingleObjectType::Array) {
+            checkType(((ArrayObject *) type)->memberType, line, column);
+            if (((ArrayObject *) type)->memberType->singleObjectType() == SingleObjectType::Void) {
+                TypeError::typeNotAllowed(((ArrayObject *) type)->memberType, line, column);
+            }
+        }
+    }
+
+    void TypeChecker::checkLocalVarDefStmt(VarDefStmt *stmt) {
+        for (int i = 0; i < stmt->vars.size(); i++) {
+            checkType(stmt->types[i], stmt->vars[i]->line, stmt->vars[i]->column);
+            if (stmt->types[i]->singleObjectType() == SingleObjectType::Void) {
+                TypeError::typeNotAllowed(stmt->types[i], stmt->vars[i]->line, stmt->vars[i]->column);
+            }
+            if (stmt->initValues[i] != nullptr) {
+                checkExpr(stmt->initValues[i], curBlock->varTable);
+                if (!stmt->types[i]->isEqual(stmt->initValues[i]->objectType)) {
+                    TypeError::typeNotMatch(stmt->types[i], stmt->initValues[i]->objectType, stmt->initValues[i]->line, stmt->initValues[i]->column);
+                }
+            }
+            curBlock->varTable->set(((IdentifierExpr *) stmt->vars[i])->identifier, stmt->types[i], stmt->vars[i]->line, stmt->vars[i]->column);
+        }
+    }
+
+    void TypeChecker::checkIfStmt(IfStmt *stmt) {
+        for (int i = 0; i < stmt->conditions.size(); i++) {
+            checkExpr(stmt->conditions[i], curBlock->varTable);
+            if (stmt->conditions[i]->objectType->singleObjectType() != SingleObjectType::Bool) {
+                TypeError::typeNotMatch(new BoolObject(), stmt->conditions[i]->objectType, stmt->conditions[i]->line, stmt->conditions[i]->column);
+            }
+            Block *temp = curBlock;
+            curBlock = stmt->blocks[i];
+            checkBlock(temp->varTable);
+            curBlock = temp;
+        }
+        if (stmt->blocks.size() > stmt->conditions.size()) {
+            Block *temp = curBlock;
+            curBlock = stmt->blocks[stmt->blocks.size() - 1];
+            checkBlock(temp->varTable);
+            curBlock = temp;
+        }
+    }
+
+    void TypeChecker::checkWhileStmt(WhileStmt *stmt) {
+        checkExpr(stmt->condition, curBlock->varTable);
+        Block *temp = curBlock;
+        Block *loopTemp = curLoopBlock;
+        curBlock = curLoopBlock = stmt->block;
+        checkBlock(temp->varTable);
+        curBlock = temp;
+        curLoopBlock = loopTemp;
+    }
+
+    void TypeChecker::checkExprStmt(ExprStmt *stmt) {
+        checkExpr(stmt->expr, curBlock->varTable);
+    }
+
+    void TypeChecker::checkReturnStmt(ReturnStmt *stmt) {
+        if (stmt->expr == nullptr) {
+            if (returnValueType->singleObjectType() != SingleObjectType::Void) {
+                TypeError::typeNotMatch(returnValueType, new VoidObject(), stmt->line, stmt->column);
+            }
+        } else {
+            checkExpr(stmt->expr, curBlock->varTable);
+            if (!returnValueType->isEqual(stmt->expr->objectType)) {
+                TypeError::typeNotMatch(returnValueType, stmt->expr->objectType, stmt->line, stmt->column);
+            }
+        }
+    }
+
+    void TypeChecker::checkAssignExpr(AssignExpr *expr, VarTable *varTable) {
+        checkExpr(expr->left, varTable);
+        checkExpr(expr->right, varTable);
+        if (!expr->left->objectType->isEqual(expr->right->objectType)) {
+            TypeError::typeNotMatch(expr->left->objectType, expr->right->objectType, expr->line, expr->column);
         }
     }
 

@@ -15,7 +15,7 @@ namespace karl {
         void checkGlobalVarDef(VarDefStmt *stmt);
         void checkFuncDef(FuncDefStmt *stmt);
 
-        void checkType(ObjectType *type);
+        void checkType(ObjectType *type, int line, int column);
 
         void checkBlock(VarTable *outer); // this function does not change curBlock & curLoopBlock
 

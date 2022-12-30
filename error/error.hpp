@@ -26,6 +26,7 @@ namespace karl {
         static void invalidStmt(int line, int column);
         static void typeNotMatch(ObjectType *expectType, ObjectType *readType, int line, int column);
         static void typeNotAllowed(ObjectType *type, int line, int column);
+        static void funcCallArgumentsNumNotMatch(int expectNum, int readNum, int line, int column);
     };
 } // karl
 

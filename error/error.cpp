@@ -105,4 +105,8 @@ namespace karl {
         printf("Type %s is not allowed at line %d, column %d.\n", type->toString().data(), line, column);
         exit(0);
     }
+
+    void TypeError::funcCallArgumentsNumNotMatch(int expectNum, int readNum, int line, int column) {
+        printf("Cannot match the number of arguments in function call expression at line %d, column %d, read %d arguments expect %d arguments.\n", line, column, readNum, expectNum);
+    }
 } // karl
