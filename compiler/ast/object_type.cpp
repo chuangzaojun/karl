@@ -11,6 +11,14 @@ namespace karl {
 
     IntObject::~IntObject() {}
 
+    bool IntObject::isEqual(ObjectType *type) {
+        return type->singleObjectType() == SingleObjectType::Int;
+    }
+
+    std::string IntObject::toString() {
+        return "int";
+    }
+
     SingleObjectType BoolObject::singleObjectType() {
         return SingleObjectType::Bool;
     }
@@ -20,6 +28,14 @@ namespace karl {
     }
 
     BoolObject::~BoolObject() {}
+
+    bool BoolObject::isEqual(ObjectType *type) {
+        return type->singleObjectType() == SingleObjectType::Bool;
+    }
+
+    std::string BoolObject::toString() {
+        return "bool";
+    }
 
     SingleObjectType StringObject::singleObjectType() {
         return SingleObjectType::String;
@@ -31,6 +47,14 @@ namespace karl {
 
     StringObject::~StringObject() {}
 
+    bool StringObject::isEqual(ObjectType *type) {
+        return type->singleObjectType() == SingleObjectType::String;
+    }
+
+    std::string StringObject::toString() {
+        return "string";
+    }
+
     SingleObjectType CharObject::singleObjectType() {
         return SingleObjectType::Char;
     }
@@ -41,6 +65,14 @@ namespace karl {
 
     CharObject::~CharObject() {}
 
+    bool CharObject::isEqual(ObjectType *type) {
+        return type->singleObjectType() == SingleObjectType::Char;
+    }
+
+    std::string CharObject::toString() {
+        return "char";
+    }
+
     SingleObjectType VoidObject::singleObjectType() {
         return SingleObjectType::Void;
     }
@@ -50,6 +82,14 @@ namespace karl {
     }
 
     VoidObject::~VoidObject() {}
+
+    bool VoidObject::isEqual(ObjectType *type) {
+        return type->singleObjectType() == SingleObjectType::Void;
+    }
+
+    std::string VoidObject::toString() {
+        return "void";
+    }
 
     ArrayObject::ArrayObject(ObjectType *memberType, int memberNum) {
         this->memberType = memberType;
@@ -66,6 +106,20 @@ namespace karl {
 
     ArrayObject::~ArrayObject() {
         delete memberType;
+    }
+
+    bool ArrayObject::isEqual(ObjectType *type) {
+        if (type->singleObjectType() == SingleObjectType::Array) {
+            if (((ArrayObject *) type)->memberNum == memberNum) {
+                return memberType->isEqual(((ArrayObject *) type)->memberType);
+            }
+            return false;
+        }
+        return false;
+    }
+
+    std::string ArrayObject::toString() {
+        return memberType->toString() + "[" + std::to_string(memberNum) + "]";
     }
 
     ObjectType::~ObjectType() {}

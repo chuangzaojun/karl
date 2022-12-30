@@ -95,4 +95,14 @@ namespace karl {
         printf("Invalid statement at line %d, column %d.\n", line, column);
         exit(0);
     }
+
+    void TypeError::typeNotMatch(ObjectType *expectType, ObjectType *readType, int line, int column) {
+        printf("Cannot match type at line %d, column %d, read %s, but expect %s.\n", line, column, readType->toString().data(), expectType->toString().data());
+        exit(0);
+    }
+
+    void TypeError::typeNotAllowed(ObjectType *type, int line, int column) {
+        printf("Type %s is not allowed at line %d, column %d.\n", type->toString().data(), line, column);
+        exit(0);
+    }
 } // karl

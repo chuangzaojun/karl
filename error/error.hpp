@@ -3,6 +3,7 @@
 #define KARL_ERROR_HPP
 
 #include "../compiler/lexer/token.hpp"
+#include "../compiler/ast/object_type.hpp"
 
 namespace karl {
 
@@ -23,6 +24,8 @@ namespace karl {
     class TypeError {
     public:
         static void invalidStmt(int line, int column);
+        static void typeNotMatch(ObjectType *expectType, ObjectType *readType, int line, int column);
+        static void typeNotAllowed(ObjectType *type, int line, int column);
     };
 } // karl
 

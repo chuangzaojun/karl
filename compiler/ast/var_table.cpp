@@ -24,8 +24,5 @@ namespace karl {
     }
 
     VarTable::~VarTable() {
-        for (std::map<std::string, ObjectType *>::iterator it = varTypes.begin(); it != varTypes.end(); it++) {
-            delete it->second;
-        }
     }
 } // karl
