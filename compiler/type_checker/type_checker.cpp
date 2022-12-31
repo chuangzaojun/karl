@@ -1,5 +1,6 @@
 #include "type_checker.hpp"
 #include "../../error/error.hpp"
+#include <set>
 
 namespace karl {
     TypeChecker::TypeChecker(Program *program) {
@@ -15,10 +16,13 @@ namespace karl {
             switch (stmt->stmtType()) {
                 case StmtType::FuncDef:
                     checkFuncDef((FuncDefStmt *) stmt);
+                    break;
                 case StmtType::VarDef:
                     checkGlobalVarDef((VarDefStmt *) stmt);
+                    break;
                 default:
                     TypeError::invalidStmt(stmt->line, stmt->column);
+                    break;
             }
         }
     }
@@ -41,22 +45,23 @@ namespace karl {
 
     void TypeChecker::checkFuncDef(FuncDefStmt *stmt) {
         program->funcTable->set(((IdentifierExpr *) stmt->name)->identifier, stmt, stmt->line, stmt->column);
+        VarTable *funcVarTable = new VarTable(program->varTable);
         for (int i = 0; i < stmt->parameters.size(); i++) {
             checkType(stmt->parameterTypes[i], stmt->parameters[i]->line, stmt->parameters[i]->column);
             if (stmt->parameterTypes[i]->singleObjectType() == SingleObjectType::Void) {
                 TypeError::typeNotAllowed(stmt->parameterTypes[i], stmt->parameters[i]->line, stmt->parameters[i]->column);
             }
-            stmt->block->varTable->set(((IdentifierExpr *) stmt->parameters[i])->identifier, stmt->parameterTypes[i], stmt->parameters[i]->line, stmt->parameters[i]->column);
+            funcVarTable->set(((IdentifierExpr *) stmt->parameters[i])->identifier, stmt->parameterTypes[i], stmt->parameters[i]->line, stmt->parameters[i]->column);
         }
         returnValueType = stmt->objectType;
         curBlock = stmt->block;
         returnValueType = stmt->objectType;
-        checkBlock(program->varTable);
+        checkBlock(funcVarTable);
         curBlock = nullptr;
     }
 
-    void TypeChecker::checkBlock(VarTable *outer) {
-        curBlock->varTable = new VarTable(outer);
+    void TypeChecker::checkBlock(VarTable *varTable) {
+        curBlock->varTable = varTable;
         for (Stmt *stmt: curBlock->stmts) {
             checkStmt(stmt);
         }
@@ -91,7 +96,7 @@ namespace karl {
             case StmtType::Block:
                 Block *temp = curBlock;
                 curBlock = (Block *) stmt;
-                checkBlock(temp->varTable);
+                checkBlock(new VarTable(temp->varTable));
                 curBlock = temp;
                 break;
         }
@@ -132,6 +137,9 @@ namespace karl {
             case ExprType::ArrayLiteral:
                 checkArrayLiteralExpr((ArrayLiteralExpr *) expr, varTable);
                 break;
+            case ExprType::Identifier:
+                checkIdentifierExpr((IdentifierExpr *) expr, varTable);
+                break;
         }
     }
 
@@ -159,6 +167,10 @@ namespace karl {
 
     void TypeChecker::checkArrayIndexExpr(ArrayIndexExpr *expr, VarTable *varTable) {
         checkIdentifierExpr((IdentifierExpr *) expr->array, varTable);
+        checkExpr(expr->index, varTable);
+        if (expr->index->objectType->singleObjectType() != SingleObjectType::Int) {
+            TypeError::typeNotMatch(new IntObject(), expr->index->objectType, expr->index->line, expr->index->column);
+        }
         if (expr->array->objectType->singleObjectType() == SingleObjectType::Char) {
             expr->objectType = new CharObject();
         } else {
@@ -211,17 +223,27 @@ namespace karl {
     }
 
     void TypeChecker::checkFuncCallExpr(FuncCallExpr *expr, VarTable *varTable) {
-        FuncDefStmt *func = program->funcTable->get(((IdentifierExpr *) expr->name)->identifier, expr->line, expr->column);
-        if (expr->arguments.size() != func->parameters.size()) {
-            TypeError::funcCallArgumentsNumNotMatch(func->parameters.size(), expr->arguments.size(), expr->line, expr->column);
-        }
-        for (int i = 0; i < expr->arguments.size(); i++) {
-            checkExpr(expr->arguments[i], varTable);
-            if (!expr->arguments[i]->objectType->isEqual(func->parameterTypes[i])) {
-                TypeError::typeNotMatch(func->parameterTypes[i], expr->arguments[i]->objectType, expr->arguments[i]->line, expr->arguments[i]->column);
+        if (((IdentifierExpr *) expr->name)->identifier == "print") {
+            for (int i = 0; i < expr->arguments.size(); i++) {
+                checkExpr(expr->arguments[i], varTable);
             }
+            expr->objectType = new VoidObject();
+        } else {
+            FuncDefStmt *func = program->funcTable->get(((IdentifierExpr *) expr->name)->identifier, expr->line,
+                                                        expr->column);
+            if (expr->arguments.size() != func->parameters.size()) {
+                TypeError::funcCallArgumentsNumNotMatch(func->parameters.size(), expr->arguments.size(), expr->line,
+                                                        expr->column);
+            }
+            for (int i = 0; i < expr->arguments.size(); i++) {
+                checkExpr(expr->arguments[i], varTable);
+                if (!expr->arguments[i]->objectType->isEqual(func->parameterTypes[i])) {
+                    TypeError::typeNotMatch(func->parameterTypes[i], expr->arguments[i]->objectType,
+                                            expr->arguments[i]->line, expr->arguments[i]->column);
+                }
+            }
+            expr->objectType = func->objectType->copy();
         }
-        expr->objectType = func->objectType->copy();
     }
 
     void TypeChecker::checkType(ObjectType *type, int line, int column) {
@@ -257,13 +279,13 @@ namespace karl {
             }
             Block *temp = curBlock;
             curBlock = stmt->blocks[i];
-            checkBlock(temp->varTable);
+            checkBlock(new VarTable(temp->varTable));
             curBlock = temp;
         }
         if (stmt->blocks.size() > stmt->conditions.size()) {
             Block *temp = curBlock;
             curBlock = stmt->blocks[stmt->blocks.size() - 1];
-            checkBlock(temp->varTable);
+            checkBlock(new VarTable(temp->varTable));
             curBlock = temp;
         }
     }
@@ -273,7 +295,7 @@ namespace karl {
         Block *temp = curBlock;
         Block *loopTemp = curLoopBlock;
         curBlock = curLoopBlock = stmt->block;
-        checkBlock(temp->varTable);
+        checkBlock(new VarTable(temp->varTable));
         curBlock = temp;
         curLoopBlock = loopTemp;
     }
@@ -300,6 +322,79 @@ namespace karl {
         checkExpr(expr->right, varTable);
         if (!expr->left->objectType->isEqual(expr->right->objectType)) {
             TypeError::typeNotMatch(expr->left->objectType, expr->right->objectType, expr->line, expr->column);
+        }
+        if (expr->left->exprType() != ExprType::Identifier && expr->left->exprType() != ExprType::ArrayIndex) {
+            TypeError::invalidOp(OpType::Assign, expr->line, expr->column);
+        }
+        expr->objectType = expr->left->objectType->copy();
+    }
+
+    void TypeChecker::checkBreakStmt(BreakStmt *stmt) {
+        if (curLoopBlock == nullptr) {
+            TypeError::invalidStmt(stmt->line, stmt->column);
+        }
+        stmt->loopBlock = curLoopBlock;
+        curLoopBlock->breakStmts.push_back(stmt);
+    }
+
+    void TypeChecker::checkContinueStmt(ContinueStmt *stmt) {
+        if (curLoopBlock == nullptr) {
+            TypeError::invalidStmt(stmt->line, stmt->column);
+        }
+        stmt->loopBlock = curLoopBlock;
+        curLoopBlock->continueStmts.push_back(stmt);
+    }
+
+    void TypeChecker::checkPrefixExpr(PrefixExpr *expr, VarTable *varTable) {
+        checkExpr(expr->right, varTable);
+        if (expr->right->objectType->singleObjectType() != SingleObjectType::Int) {
+            TypeError::invalidOp(expr->op, expr->line, expr->column);
+        }
+        expr->objectType = new IntObject();
+    }
+
+    void TypeChecker::checkBinaryExpr(BinaryExpr *expr, VarTable *varTable) {
+        checkExpr(expr->left, varTable);
+        checkExpr(expr->right, varTable);
+        if (!expr->left->objectType->isEqual(expr->right->objectType) || expr->left->objectType->singleObjectType() == SingleObjectType::Array) {
+            TypeError::invalidOp(expr->op, expr->line, expr->column);
+        }
+        switch (expr->op) {
+            case OpType::Minus:
+            case OpType::Add:
+            case OpType::Mul:
+            case OpType::Div:
+            case OpType::Mod:
+            case OpType::BAnd:
+            case OpType::BOr:
+            case OpType::BXor:
+            case OpType::LMove:
+            case OpType::RMove:
+                if (expr->left->objectType->singleObjectType() != SingleObjectType::Int) {
+                    TypeError::invalidOp(expr->op, expr->line, expr->column);
+                }
+                expr->objectType = new IntObject();
+                break;
+            case OpType::LessThan:
+            case OpType::LessEqual:
+            case OpType::GreaterThan:
+            case OpType::GreaterEqual:
+                if (expr->left->objectType->singleObjectType() != SingleObjectType::Int && expr->left->objectType->singleObjectType() != SingleObjectType::Char) {
+                    TypeError::invalidOp(expr->op, expr->line, expr->column);
+                }
+                expr->objectType = new BoolObject();
+                break;
+            case OpType::Equal:
+            case OpType::NotEqual:
+                expr->objectType = new BoolObject();
+                break;
+            case OpType::And:
+            case OpType::Or:
+                if (expr->left->objectType->singleObjectType() != SingleObjectType::Bool) {
+                    TypeError::invalidOp(expr->op, expr->line, expr->column);
+                }
+                expr->objectType = new BoolObject();
+                break;
         }
     }
 

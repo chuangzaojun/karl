@@ -1,4 +1,5 @@
 #include "compiler/parser/parser.hpp"
+#include "compiler/type_checker/type_checker.hpp"
 #include <iostream>
 #include <vector>
 #include <map>
@@ -16,7 +17,7 @@ int main() {
                       "\n"
                       "func main() : void {\n"
                       "    var a: int = 10, i: int = 0;\n"
-                      "    while (i <= n) {\n"
+                      "    while (i <= a) {\n"
                       "        i = i + 1;\n"
                       "        print(fib(i));\n"
                       "    }\n"
@@ -24,5 +25,7 @@ int main() {
     Lexer *lexer = new Lexer(src);
     Parser *parser = new Parser(lexer);
     Program *program = parser->parseProgram();
+    TypeChecker *tc = new TypeChecker(program);
+    tc->checkProgram();
     return 0;
 }

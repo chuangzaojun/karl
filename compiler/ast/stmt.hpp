@@ -29,6 +29,8 @@ namespace karl {
 
     struct Block : public Stmt {
         std::vector<Stmt *> stmts;
+        std::vector<Stmt *> breakStmts;
+        std::vector<Stmt *> continueStmts;
         bool isLoopBlock;
         VarTable *varTable;
 
@@ -87,6 +89,7 @@ namespace karl {
     };
 
     struct BreakStmt : public Stmt {
+        Block *loopBlock;
 
         BreakStmt(int line, int column);
         StmtType stmtType() override;
@@ -94,6 +97,8 @@ namespace karl {
     };
 
     struct ContinueStmt : public Stmt {
+        Block *loopBlock;
+
         ContinueStmt(int line, int column);
         StmtType stmtType() override;
         ~ContinueStmt() override;

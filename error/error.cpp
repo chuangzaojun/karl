@@ -71,22 +71,22 @@ namespace karl {
         exit(0);
     }
 
-    void varNotFoundError(std::string var, int line, int column) {
+    void TypeError::varNotFoundError(std::string var, int line, int column) {
         printf("Cannot find the variable %s at line %d, column %d.\n", var.data(), line, column);
         exit(0);
     }
 
-    void varHasDefError(std::string var, int line, int column) {
+    void TypeError::varHasDefError(std::string var, int line, int column) {
         printf("There has been a variable %s at line %d, column %d.\n", var.data(), line, column);
         exit(0);
     }
 
-    void funcNotFoundError(std::string func, int line, int column) {
+    void TypeError::funcNotFoundError(std::string func, int line, int column) {
         printf("Cannot find the function %s at line %d, column %d.\n", func.data(), line, column);
         exit(0);
     }
 
-    void funcHasDefError(std::string func, int line, int column) {
+    void TypeError::funcHasDefError(std::string func, int line, int column) {
         printf("There has been a function %s at line %d, column %d.\n", func.data(), line, column);
         exit(0);
     }
@@ -108,5 +108,33 @@ namespace karl {
 
     void TypeError::funcCallArgumentsNumNotMatch(int expectNum, int readNum, int line, int column) {
         printf("Cannot match the number of arguments in function call expression at line %d, column %d, read %d arguments expect %d arguments.\n", line, column, readNum, expectNum);
+        exit(0);
+    }
+
+    void TypeError::invalidOp(OpType op, int line, int column) {
+        std::map<OpType, std::string> opNames = {
+                {OpType::Assign,        "="},
+                {OpType::Minus,         "-"},
+                {OpType::Add,           "+"},
+                {OpType::Mul,           "/"},
+                {OpType::Mod,           "%"},
+                {OpType::LessThan,      "<"},
+                {OpType::LessEqual,     "<="},
+                {OpType::GreaterThan,   ">"},
+                {OpType::GreaterEqual,  ">="},
+                {OpType::Equal,         "=="},
+                {OpType::NotEqual,      "!="},
+                {OpType::And,           "&&"},
+                {OpType::Or,            "||"},
+                {OpType::Not,           "!"},
+                {OpType::BAnd,          "&"},
+                {OpType::BOr,           "|"},
+                {OpType::BNot,          "~"},
+                {OpType::BXor,          "^"},
+                {OpType::LMove,         "<<"},
+                {OpType::RMove,         ">>"}
+        };
+        printf("Invalid operator at line %d, column %d, read \"%s\".\n", line, column, opNames[op].data());
+        exit(0);
     }
 } // karl

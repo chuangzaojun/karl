@@ -7,22 +7,21 @@ namespace karl {
     }
 
     void VarTable::set(std::string var, ObjectType *type, int line, int column) {
-        if (!varTypes.count(var)) {
-            varHasDefError(var, line, column);
+        if (varTypes.count(var) > 0) {
+            TypeError::varHasDefError(var, line, column);
         }
         varTypes[var] = type;
     }
 
     ObjectType *VarTable::get(std::string var, int line, int column) {
-        if (!varTypes.count(var)) {
+        if (varTypes.count(var) == 0) {
             if (outer == nullptr) {
-                varNotFoundError(var, line, column);
+                TypeError::varNotFoundError(var, line, column);
             }
             return outer->get(var, line, column);
         }
         return varTypes[var]->copy();
     }
 
-    VarTable::~VarTable() {
-    }
+    VarTable::~VarTable() {}
 } // karl

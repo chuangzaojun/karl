@@ -3,6 +3,7 @@
 #define KARL_ERROR_HPP
 
 #include "../compiler/lexer/token.hpp"
+#include "../compiler/ast/expr.hpp"
 #include "../compiler/ast/object_type.hpp"
 
 namespace karl {
@@ -13,20 +14,17 @@ namespace karl {
 
     void grammarError(Token *readToken);
 
-    void varNotFoundError(std::string var, int line, int column);
-
-    void varHasDefError(std::string var, int line, int column);
-
-    void funcNotFoundError(std::string func, int line, int column);
-
-    void funcHasDefError(std::string func, int line, int column);
-
     class TypeError {
     public:
+        static void varNotFoundError(std::string var, int line, int column);
+        static void varHasDefError(std::string var, int line, int column);
+        static void funcNotFoundError(std::string func, int line, int column);
+        static void funcHasDefError(std::string func, int line, int column);
         static void invalidStmt(int line, int column);
         static void typeNotMatch(ObjectType *expectType, ObjectType *readType, int line, int column);
         static void typeNotAllowed(ObjectType *type, int line, int column);
         static void funcCallArgumentsNumNotMatch(int expectNum, int readNum, int line, int column);
+        static void invalidOp(OpType op, int line, int column);
     };
 } // karl
 

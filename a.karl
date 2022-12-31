@@ -7,7 +7,7 @@ func fib(n: int) : int {
 
 func main() : void {
     var a: int = 10, i: int = 0;
-    while (i <= n) {
+    while (i <= a) {
         i = i + 1;
         print(fib(i));
     }

@@ -248,6 +248,7 @@ namespace karl {
             return newToken(TokenType::StringLiteral, scanString());
         }
         lexError(line, column);
+        return nullptr;
     }
 
     std::string Lexer::scanChar() {
