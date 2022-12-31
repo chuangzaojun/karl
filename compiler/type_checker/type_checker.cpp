@@ -356,12 +356,20 @@ namespace karl {
     void TypeChecker::checkBinaryExpr(BinaryExpr *expr, VarTable *varTable) {
         checkExpr(expr->left, varTable);
         checkExpr(expr->right, varTable);
+        if (expr->op == OpType::Add) {
+            if (expr->left->objectType->singleObjectType() == SingleObjectType::String || expr->left->objectType->singleObjectType() == SingleObjectType::Char) {
+                if (expr->right->objectType->singleObjectType() == SingleObjectType::String || expr->right->objectType->singleObjectType() == SingleObjectType::Char) {
+                    expr->objectType = new StringObject();
+                    return;
+                }
+            }
+        }
         if (!expr->left->objectType->isEqual(expr->right->objectType) || expr->left->objectType->singleObjectType() == SingleObjectType::Array) {
             TypeError::invalidOp(expr->op, expr->line, expr->column);
         }
         switch (expr->op) {
-            case OpType::Minus:
             case OpType::Add:
+            case OpType::Minus:
             case OpType::Mul:
             case OpType::Div:
             case OpType::Mod:
