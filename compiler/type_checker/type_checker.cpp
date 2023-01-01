@@ -361,9 +361,11 @@ namespace karl {
                 if (expr->right->objectType->singleObjectType() == SingleObjectType::String || expr->right->objectType->singleObjectType() == SingleObjectType::Char) {
                     if (expr->left->objectType->singleObjectType() == SingleObjectType::Char) {
                         expr->left = new TypeConversionExpr(SingleObjectType::String, expr->left, expr->left->line, expr->left->column);
+                        expr->left->objectType = new StringObject();
                     }
                     if (expr->right->objectType->singleObjectType() == SingleObjectType::Char) {
                         expr->right = new TypeConversionExpr(SingleObjectType::String, expr->right, expr->right->line, expr->right->column);
+                        expr->right->objectType = new StringObject();
                     }
                     expr->objectType = new StringObject();
                     return;
