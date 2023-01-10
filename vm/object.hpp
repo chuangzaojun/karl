@@ -1,7 +1,7 @@
 #ifndef KARL_OBJECT_HPP
 #define KARL_OBJECT_HPP
 
-namespace karl {
+namespace karl::vm {
 
     enum class SingleObjectType {
         _,
@@ -17,8 +17,6 @@ namespace karl {
         virtual SingleObjectType type() = 0;
         virtual ~Object() = 0;
     };
-
-    struct
 
 } // karl
 

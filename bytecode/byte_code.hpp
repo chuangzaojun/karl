@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-namespace karl {
+namespace karl::bytecode {
 
     struct ByteCode {
 

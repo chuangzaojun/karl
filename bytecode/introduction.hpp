@@ -1,7 +1,7 @@
 #ifndef KARL_INTRODUCTION_HPP
 #define KARL_INTRODUCTION_HPP
 
-namespace karl {
+namespace karl::bytecode {
 
     enum class OpCode {
         PushIntConst,

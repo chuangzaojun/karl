@@ -1,4 +1,4 @@
 #include "byte_code.hpp"
 
-namespace karl {
+namespace karl::bytecode {
 } // karl

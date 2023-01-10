@@ -3,7 +3,7 @@
 
 #include <list>
 
-namespace karl {
+namespace karl::vm {
 
     class Heap {
     };

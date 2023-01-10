@@ -1,4 +1,4 @@
 #include "heap.hpp"
 
-namespace karl {
+namespace karl::vm {
 } // karl
