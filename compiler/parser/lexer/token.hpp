@@ -79,7 +79,7 @@ namespace karl::compiler {
         int line;
         int column;
 
-        Token(TokenType _type, std::string _literal, int _line, int _column);
+        Token(TokenType type, std::string literal, int line, int column);
     };
 
 } // karl

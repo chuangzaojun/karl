@@ -1,10 +1,10 @@
 #include "token.hpp"
 
 namespace karl::compiler {
-    Token::Token(TokenType _type, std::string _literal, int _line, int _column) {
-        type = _type;
-        literal = _literal;
-        line = _line;
-        column = _column;
+    Token::Token(TokenType type, std::string literal, int line, int column) {
+        this->type = type;
+        this->literal = literal;
+        this->line = line;
+        this->column = column;
     }
 } // karl
