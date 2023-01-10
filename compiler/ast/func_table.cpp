@@ -15,6 +15,4 @@ namespace karl {
         }
         return funcStmts[func];
     }
-
-    FuncTable::~FuncTable() {}
 } // karl

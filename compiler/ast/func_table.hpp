@@ -15,7 +15,6 @@ namespace karl {
     public:
         void set(std::string func, FuncDefStmt *stmt, int line, int column);
         FuncDefStmt *get(std::string func, int line, int column);
-        ~FuncTable();
     };
 
 } // karl

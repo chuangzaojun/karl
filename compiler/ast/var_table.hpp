@@ -10,13 +10,16 @@ namespace karl {
     class VarTable {
     private:
         std::map<std::string, ObjectType *> varTypes;
+        std::map<std::string, int> varIndexes;
         VarTable *outer;
 
     public:
         VarTable(VarTable *outer);
         void set(std::string var, ObjectType *type, int line, int column);
-        ObjectType *get(std::string var, int line, int column);
-        ~VarTable();
+        bool isLocalVar(std::string var);
+        int localVarNum();
+        ObjectType *getType(std::string var, int line, int column);
+        int getIndex(std::string var);
     };
 
 } // karl
