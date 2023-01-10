@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-namespace karl {
+namespace karl::compiler {
 
     enum class ExprType {
         _,

@@ -1,6 +1,6 @@
 #include "program.hpp"
 
-namespace karl {
+namespace karl::compiler {
     Program::~Program() {
         for (Stmt *i: stmts) {
             delete i;

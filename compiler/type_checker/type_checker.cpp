@@ -1,8 +1,8 @@
 #include "type_checker.hpp"
-#include "../../error/error.hpp"
+#include "../error/error.hpp"
 #include <set>
 
-namespace karl {
+namespace karl::compiler {
     TypeChecker::TypeChecker(Program *program) {
         this->program = program;
         this->curBlock = nullptr;
@@ -186,7 +186,7 @@ namespace karl {
     }
 
     void TypeChecker::checkIdentifierExpr(IdentifierExpr *expr, VarTable *varTable) {
-        expr->objectType = varTable->get(expr->identifier, expr->line, expr->column)->copy();
+        expr->objectType = varTable->getType(expr->identifier, expr->line, expr->column)->copy();
     }
 
     void TypeChecker::checkTypeConversionExpr(TypeConversionExpr *expr, VarTable *varTable) {

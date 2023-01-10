@@ -3,7 +3,7 @@
 #include <map>
 #include <string>
 
-namespace karl {
+namespace karl::compiler {
 
     std::map<std::string, TokenType> keywords = {
             {"true",     TokenType::True},
@@ -40,8 +40,8 @@ namespace karl {
         return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
     }
 
-    Lexer::Lexer(std::string _src) {
-        src = _src;
+    Lexer::Lexer(std::string src) {
+        this->src = src;
         line = 1;
         column = 1;
         pos = 0;

@@ -5,7 +5,7 @@
 #include <map>
 #include <string>
 
-namespace karl {
+namespace karl::compiler {
 
     class VarTable {
     private:

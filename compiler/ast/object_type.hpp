@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace karl {
+namespace karl::compiler {
 
     enum class SingleObjectType {
         _,

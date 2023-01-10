@@ -1,7 +1,7 @@
 #include "var_table.hpp"
-#include "../../error/error.hpp"
+#include "../error/error.hpp"
 
-namespace karl {
+namespace karl::compiler {
     VarTable::VarTable(VarTable *outer) {
         this->outer = outer;
     }

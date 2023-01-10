@@ -4,7 +4,7 @@
 #include "../lexer/lexer.hpp"
 #include "../ast/program.hpp"
 
-namespace karl {
+namespace karl::compiler {
 
     class Parser {
     private:

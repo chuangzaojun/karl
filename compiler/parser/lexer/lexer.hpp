@@ -4,7 +4,7 @@
 #include "token.hpp"
 #include <string>
 
-namespace karl {
+namespace karl::compiler {
 
     class Lexer {
     private:

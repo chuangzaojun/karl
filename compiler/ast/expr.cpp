@@ -1,6 +1,6 @@
 #include "expr.hpp"
 
-namespace karl {
+namespace karl::compiler {
 
 
     BinaryExpr::BinaryExpr(Expr *left, OpType op, Expr *right, int line, int column) {

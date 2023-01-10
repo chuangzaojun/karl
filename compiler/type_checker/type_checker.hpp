@@ -3,7 +3,7 @@
 
 #include "../ast/program.hpp"
 
-namespace karl {
+namespace karl::compiler {
 
     class TypeChecker {
     private:

@@ -1,6 +1,6 @@
 #include "object_type.hpp"
 
-namespace karl {
+namespace karl::compiler {
     SingleObjectType IntObject::singleObjectType() {
         return SingleObjectType::Int;
     }

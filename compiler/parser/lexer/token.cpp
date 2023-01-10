@@ -1,6 +1,6 @@
 #include "token.hpp"
 
-namespace karl {
+namespace karl::compiler {
     Token::Token(TokenType _type, std::string _literal, int _line, int _column) {
         type = _type;
         literal = _literal;

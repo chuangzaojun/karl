@@ -4,7 +4,7 @@
 #include "expr.hpp"
 #include "var_table.hpp"
 
-namespace karl {
+namespace karl::compiler {
 
     enum class StmtType {
         _,

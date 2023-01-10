@@ -5,7 +5,7 @@
 #include "func_table.hpp"
 #include <vector>
 
-namespace karl {
+namespace karl::compiler {
 
     struct Program {
         std::vector<Stmt *> stmts;

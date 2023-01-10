@@ -1,6 +1,6 @@
 #include "stmt.hpp"
 
-namespace karl {
+namespace karl::compiler {
     Block::Block(bool isLoopBlock, int line, int column) {
         this->isLoopBlock = isLoopBlock;
         this->line = line;

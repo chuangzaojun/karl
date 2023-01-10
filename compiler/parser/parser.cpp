@@ -1,11 +1,11 @@
 #include "parser.hpp"
-#include "../../error/error.hpp"
+#include "../error/error.hpp"
 #include <map>
 #include <iostream>
 
-namespace karl {
+namespace karl::compiler {
 
-    Parser::Parser(karl::Lexer *lexer) {
+    Parser::Parser(Lexer *lexer) {
         this->lexer = lexer;
         this->curToken = nullptr;
         this->nextToken = nullptr;

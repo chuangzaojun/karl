@@ -2,11 +2,11 @@
 #ifndef KARL_ERROR_HPP
 #define KARL_ERROR_HPP
 
-#include "../compiler/lexer/token.hpp"
-#include "../compiler/ast/expr.hpp"
-#include "../compiler/ast/object_type.hpp"
+#include "../lexer/token.hpp"
+#include "../ast/expr.hpp"
+#include "../ast/object_type.hpp"
 
-namespace karl {
+namespace karl::compiler {
 
     void lexError(int line, int column);
 
