@@ -20,6 +20,7 @@ namespace karl {
             IfFalseGoto,
             Goto,
             FuncCall,
+            NativeFuncCall,
 
             MakeArray,
 
@@ -34,7 +35,7 @@ namespace karl {
             SetArrayIndex,
             GetArrayIndex,
 
-            Assign, // =
+            // binary op
             Minus, // -
             Add, // +
             Mul, // *
@@ -49,14 +50,17 @@ namespace karl {
 
             And, // &&
             Or, // ||
-            Not, // !
 
             BAnd, // &
             BOr, // |
-            BNot, // ~
             BXor, // ^
             LMove, // <<
             RMove, // >>
+
+            // prefix op
+            PreMinus, // -
+            Not, // !
+            BNot, // ~
         };
 
         enum class IntroductionType {

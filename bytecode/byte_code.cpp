@@ -1,4 +1,4 @@
-#include "bytecode.hpp"
+#include "byte_code.hpp"
 
 namespace karl {
     namespace bytecode {

@@ -1,5 +1,5 @@
-#ifndef KARL_BYTECODE_HPP
-#define KARL_BYTECODE_HPP
+#ifndef KARL_BYTE_CODE_HPP
+#define KARL_BYTE_CODE_HPP
 
 #include "func_info.hpp"
 #include <vector>
@@ -22,4 +22,4 @@ namespace karl {
 
 }
 
-#endif //KARL_BYTECODE_HPP
+#endif //KARL_BYTE_CODE_HPP
