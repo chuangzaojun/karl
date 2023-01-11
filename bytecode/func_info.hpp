@@ -4,10 +4,16 @@
 #include "introduction.hpp"
 #include <vector>
 
-namespace karl::bytecode {
-    struct FuncInfo {
-        std::vector<Introduction *> introductions;
-    };
-} // karl
+namespace karl {
+    namespace bytecode {
+        struct FuncInfo {
+            int maxStackSize;
+            int maxLocalVarNum;
+            std::vector<Introduction *> introductions;
+
+            ~FuncInfo();
+        };
+    }
+}
 
 #endif //KARL_FUNC_INFO_HPP

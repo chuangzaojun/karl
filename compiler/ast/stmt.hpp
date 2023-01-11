@@ -4,114 +4,117 @@
 #include "expr.hpp"
 #include "var_table.hpp"
 
-namespace karl::compiler {
+namespace karl {
 
-    enum class StmtType {
-        _,
-        Block,
-        Expr,
-        FuncDef,
-        VarDef,
-        If,
-        While,
-        Break,
-        Continue,
-        Return
-    };
+    namespace compiler {
 
-    struct Stmt {
-        int line;
-        int column;
+        enum class StmtType {
+            _,
+            Block,
+            Expr,
+            FuncDef,
+            VarDef,
+            If,
+            While,
+            Break,
+            Continue,
+            Return
+        };
 
-        virtual StmtType stmtType() = 0;
-        virtual ~Stmt();
-    };
+        struct Stmt {
+            int line;
+            int column;
 
-    struct Block : public Stmt {
-        std::vector<Stmt *> stmts;
-        std::vector<Stmt *> breakStmts;
-        std::vector<Stmt *> continueStmts;
-        bool isLoopBlock;
-        VarTable *varTable;
+            virtual StmtType stmtType() = 0;
+            virtual ~Stmt();
+        };
 
-        Block(bool isLoopBlock, int line, int column);
-        StmtType stmtType() override;
-        ~Block() override;
-    };
+        struct Block : public Stmt {
+            std::vector<Stmt *> stmts;
+            std::vector<Stmt *> breakStmts;
+            std::vector<Stmt *> continueStmts;
+            bool isLoopBlock;
+            VarTable *varTable;
 
-    struct ExprStmt : public Stmt {
-        Expr *expr;
+            Block(bool isLoopBlock, int line, int column);
+            StmtType stmtType() override;
+            ~Block() override;
+        };
 
-        ExprStmt(Expr *expr, int line, int column);
-        StmtType stmtType() override;
-        ~ExprStmt() override;
-    };
+        struct ExprStmt : public Stmt {
+            Expr *expr;
 
-    struct FuncDefStmt : public Stmt {
-        Expr *name;
-        std::vector<Expr *> parameters;
-        std::vector<ObjectType *> parameterTypes;
-        Block *block;
+            ExprStmt(Expr *expr, int line, int column);
+            StmtType stmtType() override;
+            ~ExprStmt() override;
+        };
 
-        ObjectType *objectType;
+        struct FuncDefStmt : public Stmt {
+            Expr *name;
+            std::vector<Expr *> parameters;
+            std::vector<ObjectType *> parameterTypes;
+            Block *block;
 
-        FuncDefStmt(Expr *name, Block *block, int line, int column);
-        StmtType stmtType() override;
-        ~FuncDefStmt() override;
-    };
+            ObjectType *objectType;
 
-    struct VarDefStmt : public Stmt {
-        std::vector<Expr *> vars;
-        std::vector<ObjectType *> types;
-        std::vector<Expr *> initValues;
+            FuncDefStmt(Expr *name, Block *block, int line, int column);
+            StmtType stmtType() override;
+            ~FuncDefStmt() override;
+        };
 
-        VarDefStmt(int line, int column);
-        StmtType stmtType() override;
-        ~VarDefStmt() override;
-    };
+        struct VarDefStmt : public Stmt {
+            std::vector<Expr *> vars;
+            std::vector<ObjectType *> types;
+            std::vector<Expr *> initValues;
 
-    struct IfStmt : public Stmt {
-        std::vector<Expr *> conditions;
-        std::vector<Block *> blocks;
+            VarDefStmt(int line, int column);
+            StmtType stmtType() override;
+            ~VarDefStmt() override;
+        };
 
-        IfStmt(int line, int column);
-        StmtType stmtType() override;
-        ~IfStmt() override;
-    };
+        struct IfStmt : public Stmt {
+            std::vector<Expr *> conditions;
+            std::vector<Block *> blocks;
 
-    struct WhileStmt : public Stmt {
-        Expr *condition;
-        Block *block;
+            IfStmt(int line, int column);
+            StmtType stmtType() override;
+            ~IfStmt() override;
+        };
 
-        WhileStmt(Expr *condition, Block *block, int line, int column);
-        StmtType stmtType() override;
-        ~WhileStmt() override;
-    };
+        struct WhileStmt : public Stmt {
+            Expr *condition;
+            Block *block;
 
-    struct BreakStmt : public Stmt {
-        Block *loopBlock;
+            WhileStmt(Expr *condition, Block *block, int line, int column);
+            StmtType stmtType() override;
+            ~WhileStmt() override;
+        };
 
-        BreakStmt(int line, int column);
-        StmtType stmtType() override;
-        ~BreakStmt() override;
-    };
+        struct BreakStmt : public Stmt {
+            Block *loopBlock;
 
-    struct ContinueStmt : public Stmt {
-        Block *loopBlock;
+            BreakStmt(int line, int column);
+            StmtType stmtType() override;
+            ~BreakStmt() override;
+        };
 
-        ContinueStmt(int line, int column);
-        StmtType stmtType() override;
-        ~ContinueStmt() override;
-    };
+        struct ContinueStmt : public Stmt {
+            Block *loopBlock;
 
-    struct ReturnStmt : public Stmt {
-        Expr *expr;
+            ContinueStmt(int line, int column);
+            StmtType stmtType() override;
+            ~ContinueStmt() override;
+        };
 
-        ReturnStmt(Expr *expr, int line, int column);
-        StmtType stmtType() override;
-        ~ReturnStmt() override;
-    };
+        struct ReturnStmt : public Stmt {
+            Expr *expr;
 
-} // karl
+            ReturnStmt(Expr *expr, int line, int column);
+            StmtType stmtType() override;
+            ~ReturnStmt() override;
+        };
+    }
+
+}
 
 #endif //KARL_STMT_HPP

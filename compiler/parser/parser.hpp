@@ -1,68 +1,71 @@
 #ifndef KARL_PARSER_HPP
 #define KARL_PARSER_HPP
 
-#include "../lexer/lexer.hpp"
+#include "lexer/lexer.hpp"
 #include "../ast/program.hpp"
 
-namespace karl::compiler {
+namespace karl {
 
-    class Parser {
-    private:
-        Lexer *lexer;
-        Token *curToken;
-        Token *nextToken;
+    namespace compiler {
 
-        void advance();
-        void skip(TokenType type);
-        void expect(TokenType type);
+        class Parser {
+        private:
+            Lexer *lexer;
+            Token *curToken;
+            Token *nextToken;
 
-        Stmt *parseStmt();
-        Stmt *parseVarDefStmt();
-        Stmt *parseFuncDefStmt();
-        Stmt *parseWhileStmt();
-        Stmt *parseIfStmt();
-        Stmt *parseBreakStmt();
-        Stmt *parseContinueStmt();
-        Stmt *parseReturnStmt();
-        Stmt *parseExprStmt();
+            void advance();
+            void skip(TokenType type);
+            void expect(TokenType type);
 
-        Block *parseBlock(bool isLoopBlock);
+            Stmt *parseStmt();
+            Stmt *parseVarDefStmt();
+            Stmt *parseFuncDefStmt();
+            Stmt *parseWhileStmt();
+            Stmt *parseIfStmt();
+            Stmt *parseBreakStmt();
+            Stmt *parseContinueStmt();
+            Stmt *parseReturnStmt();
+            Stmt *parseExprStmt();
 
-        Expr *parseExpr();
+            Block *parseBlock(bool isLoopBlock);
 
-        Expr *parseArrayLiteralExpr();
+            Expr *parseExpr();
 
-        Expr *parseExpr12();
-        Expr *parseExpr11();
-        Expr *parseExpr10();
-        Expr *parseExpr9();
-        Expr *parseExpr8();
-        Expr *parseExpr7();
-        Expr *parseExpr6();
-        Expr *parseExpr5();
-        Expr *parseExpr4();
-        Expr *parseExpr3();
-        Expr *parseExpr2();
-        Expr *parseExpr1();
-        Expr *parseExpr0();
+            Expr *parseArrayLiteralExpr();
 
-        Expr *parseIdentifier();
-        Expr *parseArrayIndexExpr();
-        Expr *parseFuncCallExpr();
-        Expr *parseIntExpr();
-        Expr *parseBoolExpr();
-        Expr *parseCharExpr();
-        Expr *parseStringExpr();
-        Expr *parseTypeConversionExpr();
+            Expr *parseExpr12();
+            Expr *parseExpr11();
+            Expr *parseExpr10();
+            Expr *parseExpr9();
+            Expr *parseExpr8();
+            Expr *parseExpr7();
+            Expr *parseExpr6();
+            Expr *parseExpr5();
+            Expr *parseExpr4();
+            Expr *parseExpr3();
+            Expr *parseExpr2();
+            Expr *parseExpr1();
+            Expr *parseExpr0();
 
-        ObjectType *parseType();
-        ObjectType *parseSingleType();
+            Expr *parseIdentifier();
+            Expr *parseArrayIndexExpr();
+            Expr *parseFuncCallExpr();
+            Expr *parseIntExpr();
+            Expr *parseBoolExpr();
+            Expr *parseCharExpr();
+            Expr *parseStringExpr();
+            Expr *parseTypeConversionExpr();
 
-    public:
-        Parser(Lexer *lexer);
-        Program *parseProgram();
-    };
+            ObjectType *parseType();
+            ObjectType *parseSingleType();
 
-} // karl
+        public:
+            Parser(Lexer *lexer);
+            Program *parseProgram();
+        };
+    }
+
+}
 
 #endif //KARL_PARSER_HPP

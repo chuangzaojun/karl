@@ -6,17 +6,24 @@
 #include <map>
 #include <string>
 
-namespace karl::compiler {
+namespace karl {
 
-    class FuncTable {
-    private:
-        std::map<std::string, FuncDefStmt *> funcStmts;
+    namespace compiler {
 
-    public:
-        void set(std::string func, FuncDefStmt *stmt, int line, int column);
-        FuncDefStmt *get(std::string func, int line, int column);
-    };
+        class FuncTable {
+        private:
+            std::map<std::string, FuncDefStmt *> funcStmts;
+            std::map<std::string, int> funcIndexes;
 
-} // karl
+        public:
+            FuncTable();
+            void set(std::string func, FuncDefStmt *stmt, int line, int column);
+            int getIndex(std::string func);
+            int funcNum();
+            FuncDefStmt *getStmt(std::string func, int line, int column);
+        };
+    }
+
+}
 
 #endif //KARL_FUNC_TABLE_HPP

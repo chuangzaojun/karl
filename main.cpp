@@ -22,10 +22,10 @@ int main() {
                       "        print(fib(i));\n"
                       "    }\n"
                       "}\n";
-    Lexer *lexer = new Lexer(src);
-    Parser *parser = new Parser(lexer);
-    Program *program = parser->parseProgram();
-    TypeChecker *tc = new TypeChecker(program);
+    compiler::Lexer *lexer = new compiler::Lexer(src);
+    compiler::Parser *parser = new compiler::Parser(lexer);
+    compiler::Program *program = parser->parseProgram();
+    compiler::TypeChecker *tc = new compiler::TypeChecker(program);
     tc->checkProgram();
     return 0;
 }

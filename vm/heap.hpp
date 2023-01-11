@@ -3,11 +3,11 @@
 
 #include <list>
 
-namespace karl::vm {
-
-    class Heap {
-    };
-
-} // karl
+namespace karl {
+    namespace vm {
+        class Heap {
+        };
+    }
+}
 
 #endif //KARL_HEAP_HPP

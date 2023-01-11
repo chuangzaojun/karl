@@ -1,181 +1,183 @@
 #include "expr.hpp"
 
-namespace karl::compiler {
+namespace karl {
+
+    namespace compiler {
+
+        BinaryExpr::BinaryExpr(Expr *left, OpType op, Expr *right, int line, int column) {
+            this->left = left;
+            this->op = op;
+            this->right = right;
+            this->line = line;
+            this->column = column;
+        }
+
+        ExprType BinaryExpr::exprType() {
+            return ExprType::Binary;
+        }
+
+        BinaryExpr::~BinaryExpr() {
+            delete left;
+            delete right;
+        }
 
 
-    BinaryExpr::BinaryExpr(Expr *left, OpType op, Expr *right, int line, int column) {
-        this->left = left;
-        this->op = op;
-        this->right = right;
-        this->line = line;
-        this->column = column;
-    }
+        PrefixExpr::PrefixExpr(OpType op, Expr *right, int line, int column) {
+            this->op = op;
+            this->right = right;
+            this->line = line;
+            this->column = column;
+        }
 
-    ExprType BinaryExpr::exprType() {
-        return ExprType::Binary;
-    }
+        ExprType PrefixExpr::exprType() {
+            return ExprType::Prefix;
+        }
 
-    BinaryExpr::~BinaryExpr() {
-        delete left;
-        delete right;
-    }
+        PrefixExpr::~PrefixExpr() {
+            delete right;
+        }
 
+        AssignExpr::AssignExpr(Expr *left, Expr *right, int line, int column) {
+            this->left = left;
+            this->right = right;
+            this->line = line;
+            this->column = column;
+        }
 
-    PrefixExpr::PrefixExpr(OpType op, Expr *right, int line, int column) {
-        this->op = op;
-        this->right = right;
-        this->line = line;
-        this->column = column;
-    }
+        ExprType AssignExpr::exprType() {
+            return ExprType::Assign;
+        }
 
-    ExprType PrefixExpr::exprType() {
-        return ExprType::Prefix;
-    }
+        AssignExpr::~AssignExpr() {
+            delete left;
+            delete right;
+        }
 
-    PrefixExpr::~PrefixExpr() {
-        delete right;
-    }
+        IdentifierExpr::IdentifierExpr(std::string identifier, int line, int column) {
+            this->identifier = identifier;
+            this->line = line;
+            this->column = column;
+        }
 
-    AssignExpr::AssignExpr(Expr *left, Expr *right, int line, int column) {
-        this->left = left;
-        this->right = right;
-        this->line = line;
-        this->column = column;
-    }
+        ExprType IdentifierExpr::exprType() {
+            return ExprType::Identifier;
+        }
 
-    ExprType AssignExpr::exprType() {
-        return ExprType::Assign;
-    }
+        IdentifierExpr::~IdentifierExpr() {}
 
-    AssignExpr::~AssignExpr() {
-        delete left;
-        delete right;
-    }
+        FuncCallExpr::FuncCallExpr(Expr *name, int line, int column) {
+            this->name = name;
+            this->line = line;
+            this->column = column;
+        }
 
-    IdentifierExpr::IdentifierExpr(std::string identifier, int line, int column) {
-        this->identifier = identifier;
-        this->line = line;
-        this->column = column;
-    }
+        ExprType FuncCallExpr::exprType() {
+            return ExprType::FuncCall;
+        }
 
-    ExprType IdentifierExpr::exprType() {
-        return ExprType::Identifier;
-    }
+        FuncCallExpr::~FuncCallExpr() {
+            delete name;
+            for (Expr *i: arguments) {
+                delete i;
+            }
+        }
 
-    IdentifierExpr::~IdentifierExpr() {}
+        ArrayIndexExpr::ArrayIndexExpr(Expr *array, Expr *index, int line, int column) {
+            this->array = array;
+            this->index = index;
+            this->line = line;
+            this->column = column;
+        }
 
-    FuncCallExpr::FuncCallExpr(Expr *name, int line, int column) {
-        this->name = name;
-        this->line = line;
-        this->column = column;
-    }
+        ExprType ArrayIndexExpr::exprType() {
+            return ExprType::ArrayIndex;
+        }
 
-    ExprType FuncCallExpr::exprType() {
-        return ExprType::FuncCall;
-    }
+        ArrayIndexExpr::~ArrayIndexExpr() {
+            delete array;
+            delete index;
+        }
 
-    FuncCallExpr::~FuncCallExpr() {
-        delete name;
-        for (Expr *i: arguments) {
-            delete i;
+        ArrayLiteralExpr::ArrayLiteralExpr(int line, int column) {
+            this->line = line;
+            this->column = column;
+        }
+
+        ExprType ArrayLiteralExpr::exprType() {
+            return ExprType::ArrayLiteral;
+        }
+
+        ArrayLiteralExpr::~ArrayLiteralExpr() {
+            for (Expr *i: exprs) {
+                delete i;
+            }
+        }
+
+        Expr::~Expr() {
+            delete objectType;
+        }
+
+        IntExpr::IntExpr(int value, int line, int column) {
+            this->value = value;
+            this->line = line;
+            this->column = column;
+        }
+
+        ExprType IntExpr::exprType() {
+            return ExprType::Int;
+        }
+
+        IntExpr::~IntExpr() {}
+
+        CharExpr::CharExpr(char value, int line, int column) {
+            this->value = value;
+            this->line = line;
+            this->column = column;
+        }
+
+        ExprType CharExpr::exprType() {
+            return ExprType::Char;
+        }
+
+        CharExpr::~CharExpr() {}
+
+        StringExpr::StringExpr(std::string value, int line, int column) {
+            this->value = value;
+            this->line = line;
+            this->column = column;
+        }
+
+        ExprType StringExpr::exprType() {
+            return ExprType::String;
+        }
+
+        StringExpr::~StringExpr() {}
+
+        BoolExpr::BoolExpr(bool value, int line, int column) {
+            this->value = value;
+            this->line = line;
+            this->column = column;
+        }
+
+        ExprType BoolExpr::exprType() {
+            return ExprType::Bool;
+        }
+
+        BoolExpr::~BoolExpr() {}
+
+        TypeConversionExpr::TypeConversionExpr(SingleObjectType targetType, Expr *expr, int line, int column) {
+            this->targetType = targetType;
+            this->expr = expr;
+            this->line = line;
+            this->column = column;
+        }
+
+        ExprType TypeConversionExpr::exprType() {
+            return ExprType::TypeConversion;
+        }
+
+        TypeConversionExpr::~TypeConversionExpr() {
+            delete expr;
         }
     }
-
-    ArrayIndexExpr::ArrayIndexExpr(Expr *array, Expr *index, int line, int column) {
-        this->array = array;
-        this->index = index;
-        this->line = line;
-        this->column = column;
-    }
-
-    ExprType ArrayIndexExpr::exprType() {
-        return ExprType::ArrayIndex;
-    }
-
-    ArrayIndexExpr::~ArrayIndexExpr() {
-        delete array;
-        delete index;
-    }
-
-    ArrayLiteralExpr::ArrayLiteralExpr(int line, int column) {
-        this->line = line;
-        this->column = column;
-    }
-
-    ExprType ArrayLiteralExpr::exprType() {
-        return ExprType::ArrayLiteral;
-    }
-
-    ArrayLiteralExpr::~ArrayLiteralExpr() {
-        for (Expr *i: exprs) {
-            delete i;
-        }
-    }
-
-    Expr::~Expr() {
-        delete objectType;
-    }
-
-    IntExpr::IntExpr(int value, int line, int column) {
-        this->value = value;
-        this->line = line;
-        this->column = column;
-    }
-
-    ExprType IntExpr::exprType() {
-        return ExprType::Int;
-    }
-
-    IntExpr::~IntExpr() {}
-
-    CharExpr::CharExpr(char value, int line, int column) {
-        this->value = value;
-        this->line = line;
-        this->column = column;
-    }
-
-    ExprType CharExpr::exprType() {
-        return ExprType::Char;
-    }
-
-    CharExpr::~CharExpr() {}
-
-    StringExpr::StringExpr(std::string value, int line, int column) {
-        this->value = value;
-        this->line = line;
-        this->column = column;
-    }
-
-    ExprType StringExpr::exprType() {
-        return ExprType::String;
-    }
-
-    StringExpr::~StringExpr() {}
-
-    BoolExpr::BoolExpr(bool value, int line, int column) {
-        this->value = value;
-        this->line = line;
-        this->column = column;
-    }
-
-    ExprType BoolExpr::exprType() {
-        return ExprType::Bool;
-    }
-
-    BoolExpr::~BoolExpr() {}
-
-    TypeConversionExpr::TypeConversionExpr(SingleObjectType targetType, Expr *expr, int line, int column) {
-        this->targetType = targetType;
-        this->expr = expr;
-        this->line = line;
-        this->column = column;
-    }
-
-    ExprType TypeConversionExpr::exprType() {
-        return ExprType::TypeConversion;
-    }
-
-    TypeConversionExpr::~TypeConversionExpr() {
-        delete expr;
-    }
-} // karl
+}

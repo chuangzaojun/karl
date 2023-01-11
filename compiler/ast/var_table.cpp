@@ -1,47 +1,56 @@
 #include "var_table.hpp"
 #include "../error/error.hpp"
 
-namespace karl::compiler {
-    VarTable::VarTable(VarTable *outer) {
-        this->outer = outer;
-    }
-
-    void VarTable::set(std::string var, ObjectType *type, int line, int column) {
-        if (varTypes.count(var) > 0) {
-            TypeError::varHasDefError(var, line, column);
+namespace karl {
+    namespace compiler {
+        VarTable::VarTable(VarTable *outer) {
+            this->outer = outer;
         }
-        varTypes[var] = type;
-        varIndexes[var] = localVarNum();
-    }
 
-    ObjectType *VarTable::getType(std::string var, int line, int column) {
-        if (varTypes.count(var) == 0) {
-            if (outer == nullptr) {
-                TypeError::varNotFoundError(var, line, column);
+        void VarTable::set(std::string var, ObjectType *type, int line, int column) {
+            if (varTypes.count(var) > 0) {
+                TypeError::varHasDefError(var, line, column);
             }
-            return outer->getType(var, line, column);
+            varTypes[var] = type;
+            varIndexes[var] = localVarNum();
         }
-        return varTypes[var]->copy();
-    }
 
-    bool VarTable::isLocalVar(std::string var) {
-        if (outer == nullptr) {
-            return false;
+        ObjectType *VarTable::getType(std::string var, int line, int column) {
+            if (varTypes.count(var) == 0) {
+                if (outer == nullptr) {
+                    TypeError::varNotFoundError(var, line, column);
+                }
+                return outer->getType(var, line, column);
+            }
+            return varTypes[var]->copy();
         }
-        return outer->isLocalVar(var);
-    }
 
-    int VarTable::localVarNum() {
-        if (outer == nullptr) {
-            return 0;
+        bool VarTable::isLocalVar(std::string var) {
+            if (outer == nullptr) {
+                return false;
+            }
+            return outer->isLocalVar(var);
         }
-        return outer->localVarNum() + varIndexes.size();
-    }
 
-    int VarTable::getIndex(std::string var) {
-        if (varIndexes.count(var) != 0) {
-            return varIndexes[var];
+        int VarTable::localVarNum() {
+            if (outer == nullptr) {
+                return 0;
+            }
+            return outer->localVarNum() + varIndexes.size();
         }
-        return outer->getIndex(var);
+
+        int VarTable::getIndex(std::string var) {
+            if (varIndexes.count(var) != 0) {
+                return varIndexes[var];
+            }
+            return outer->getIndex(var);
+        }
+
+        int VarTable::globalVarNum() {
+            if (outer == nullptr) {
+                return varIndexes.size();
+            }
+            return outer->globalVarNum();
+        }
     }
-} // karl
+}

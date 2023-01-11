@@ -5,23 +5,25 @@
 #include <map>
 #include <string>
 
-namespace karl::compiler {
+namespace karl {
+    namespace compiler {
+        class VarTable {
+        private:
+            std::map<std::string, ObjectType *> varTypes;
+            std::map<std::string, int> varIndexes;
+            VarTable *outer;
 
-    class VarTable {
-    private:
-        std::map<std::string, ObjectType *> varTypes;
-        std::map<std::string, int> varIndexes;
-        VarTable *outer;
+        public:
+            VarTable(VarTable *outer);
+            void set(std::string var, ObjectType *type, int line, int column);
+            bool isLocalVar(std::string var);
+            int localVarNum();
+            int globalVarNum();
+            ObjectType *getType(std::string var, int line, int column);
+            int getIndex(std::string var);
+        };
+    }
 
-    public:
-        VarTable(VarTable *outer);
-        void set(std::string var, ObjectType *type, int line, int column);
-        bool isLocalVar(std::string var);
-        int localVarNum();
-        ObjectType *getType(std::string var, int line, int column);
-        int getIndex(std::string var);
-    };
-
-} // karl
+}
 
 #endif //KARL_VAR_TABLE_HPP

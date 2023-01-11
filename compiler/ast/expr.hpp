@@ -5,163 +5,166 @@
 #include <string>
 #include <vector>
 
-namespace karl::compiler {
+namespace karl {
 
-    enum class ExprType {
-        _,
-        Binary,
-        Prefix,
-        Assign,
-        Identifier,
-        FuncCall,
-        ArrayIndex,
-        ArrayLiteral,
-        Int,
-        Char,
-        String,
-        Bool,
-        TypeConversion
-    };
+    namespace compiler {
 
-    enum class OpType {
-        _,
-        Assign, // =
-        Minus, // -
-        Add, // +
-        Mul, // *
-        Div, // /
-        Mod, // %
-        LessThan, // <
-        LessEqual, // <=
-        GreaterThan, // >
-        GreaterEqual, // >=
-        Equal, // ==
-        NotEqual, // !=
+        enum class ExprType {
+            _,
+            Binary,
+            Prefix,
+            Assign,
+            Identifier,
+            FuncCall,
+            ArrayIndex,
+            ArrayLiteral,
+            Int,
+            Char,
+            String,
+            Bool,
+            TypeConversion
+        };
 
-        And, // &&
-        Or, // ||
-        Not, // !
+        enum class OpType {
+            _,
+            Assign, // =
+            Minus, // -
+            Add, // +
+            Mul, // *
+            Div, // /
+            Mod, // %
+            LessThan, // <
+            LessEqual, // <=
+            GreaterThan, // >
+            GreaterEqual, // >=
+            Equal, // ==
+            NotEqual, // !=
 
-        BAnd, // &
-        BOr, // |
-        BNot, // ~
-        BXor, // ^
-        LMove, // <<
-        RMove, // >>
-    };
+            And, // &&
+            Or, // ||
+            Not, // !
 
-    struct Expr {
-        int line;
-        int column;
-        ObjectType *objectType;
+            BAnd, // &
+            BOr, // |
+            BNot, // ~
+            BXor, // ^
+            LMove, // <<
+            RMove, // >>
+        };
 
-        virtual ExprType exprType() = 0;
-        virtual ~Expr();
-    };
+        struct Expr {
+            int line;
+            int column;
+            ObjectType *objectType;
 
-    struct BinaryExpr : public Expr {
-        Expr *left;
-        OpType op;
-        Expr *right;
+            virtual ExprType exprType() = 0;
+            virtual ~Expr();
+        };
 
-        BinaryExpr(Expr *left, OpType op, Expr *right, int line, int column);
-        ExprType exprType() override;
-        ~BinaryExpr() override;
-    };
+        struct BinaryExpr : public Expr {
+            Expr *left;
+            OpType op;
+            Expr *right;
 
-    struct PrefixExpr : public Expr {
-        OpType op;
-        Expr *right;
+            BinaryExpr(Expr *left, OpType op, Expr *right, int line, int column);
+            ExprType exprType() override;
+            ~BinaryExpr() override;
+        };
 
-        PrefixExpr(OpType op, Expr *right, int line, int column);
-        ExprType exprType() override;
-        ~PrefixExpr() override;
-    };
+        struct PrefixExpr : public Expr {
+            OpType op;
+            Expr *right;
 
-    struct AssignExpr : public Expr {
-        Expr *left;
-        Expr *right;
+            PrefixExpr(OpType op, Expr *right, int line, int column);
+            ExprType exprType() override;
+            ~PrefixExpr() override;
+        };
 
-        AssignExpr(Expr *left, Expr *right, int line, int column);
-        ExprType exprType() override;
-        ~AssignExpr() override;
-    };
+        struct AssignExpr : public Expr {
+            Expr *left;
+            Expr *right;
 
-    struct IdentifierExpr : public Expr {
-        std::string identifier;
+            AssignExpr(Expr *left, Expr *right, int line, int column);
+            ExprType exprType() override;
+            ~AssignExpr() override;
+        };
 
-        IdentifierExpr(std::string identifier, int line, int column);
-        ExprType exprType() override;
-        ~IdentifierExpr() override;
-    };
+        struct IdentifierExpr : public Expr {
+            std::string identifier;
 
-    struct FuncCallExpr : public Expr {
-        Expr *name;
-        std::vector<Expr *> arguments;
+            IdentifierExpr(std::string identifier, int line, int column);
+            ExprType exprType() override;
+            ~IdentifierExpr() override;
+        };
 
-        FuncCallExpr(Expr *name, int line, int column);
-        ExprType exprType() override;
-        ~FuncCallExpr() override;
-    };
+        struct FuncCallExpr : public Expr {
+            Expr *name;
+            std::vector<Expr *> arguments;
 
-    struct ArrayIndexExpr : public Expr {
-        Expr *array;
-        Expr *index;
+            FuncCallExpr(Expr *name, int line, int column);
+            ExprType exprType() override;
+            ~FuncCallExpr() override;
+        };
 
-        ArrayIndexExpr(Expr *array, Expr *index, int line, int column);
-        ExprType exprType() override;
-        ~ArrayIndexExpr() override;
-    };
+        struct ArrayIndexExpr : public Expr {
+            Expr *array;
+            Expr *index;
 
-    struct ArrayLiteralExpr : public Expr {
-        std::vector<Expr *> exprs;
+            ArrayIndexExpr(Expr *array, Expr *index, int line, int column);
+            ExprType exprType() override;
+            ~ArrayIndexExpr() override;
+        };
 
-        ArrayLiteralExpr(int line, int column);
-        ExprType exprType() override;
-        ~ArrayLiteralExpr() override;
-    };
+        struct ArrayLiteralExpr : public Expr {
+            std::vector<Expr *> exprs;
 
-    struct IntExpr : public Expr {
-        int value;
+            ArrayLiteralExpr(int line, int column);
+            ExprType exprType() override;
+            ~ArrayLiteralExpr() override;
+        };
 
-        IntExpr(int value, int line, int column);
-        ExprType exprType() override;
-        ~IntExpr() override;
-    };
+        struct IntExpr : public Expr {
+            int value;
 
-    struct CharExpr : public Expr {
-        char value;
+            IntExpr(int value, int line, int column);
+            ExprType exprType() override;
+            ~IntExpr() override;
+        };
 
-        CharExpr(char value, int line, int column);
-        ExprType exprType() override;
-        ~CharExpr() override;
-    };
+        struct CharExpr : public Expr {
+            char value;
 
-    struct StringExpr : public Expr {
-        std::string value;
+            CharExpr(char value, int line, int column);
+            ExprType exprType() override;
+            ~CharExpr() override;
+        };
 
-        StringExpr(std::string value, int line, int column);
-        ExprType exprType() override;
-        ~StringExpr() override;
-    };
+        struct StringExpr : public Expr {
+            std::string value;
 
-    struct BoolExpr : public Expr {
-        bool value;
+            StringExpr(std::string value, int line, int column);
+            ExprType exprType() override;
+            ~StringExpr() override;
+        };
 
-        BoolExpr(bool value, int line, int column);
-        ExprType exprType() override;
-        ~BoolExpr() override;
-    };
+        struct BoolExpr : public Expr {
+            bool value;
 
-    struct TypeConversionExpr : public Expr {
-        SingleObjectType targetType;
-        Expr *expr;
+            BoolExpr(bool value, int line, int column);
+            ExprType exprType() override;
+            ~BoolExpr() override;
+        };
 
-        TypeConversionExpr(SingleObjectType targetType, Expr *expr, int line, int column);
-        ExprType exprType() override;
-        ~TypeConversionExpr() override;
-    };
+        struct TypeConversionExpr : public Expr {
+            SingleObjectType targetType;
+            Expr *expr;
 
-} // karl
+            TypeConversionExpr(SingleObjectType targetType, Expr *expr, int line, int column);
+            ExprType exprType() override;
+            ~TypeConversionExpr() override;
+        };
+    }
+
+}
 
 #endif //KARL_EXPR_HPP

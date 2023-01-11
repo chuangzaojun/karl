@@ -5,16 +5,18 @@
 #include "func_table.hpp"
 #include <vector>
 
-namespace karl::compiler {
+namespace karl {
 
-    struct Program {
-        std::vector<Stmt *> stmts;
-        VarTable *varTable;
-        FuncTable *funcTable;
+    namespace compiler {
 
-        ~Program();
-    };
+        struct Program {
+            std::vector<Stmt *> stmts;
+            VarTable *varTable;
+            FuncTable *funcTable;
 
-} // karl
+            ~Program();
+        };
+    }
+}
 
 #endif //KARL_PROGRAM_HPP

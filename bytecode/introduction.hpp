@@ -1,85 +1,88 @@
 #ifndef KARL_INTRODUCTION_HPP
 #define KARL_INTRODUCTION_HPP
 
-namespace karl::bytecode {
+namespace karl {
+    namespace bytecode {
 
-    enum class OpCode {
-        _,
+        enum class OpCode {
+            _,
 
-        // 1 number
-        PushIntConst,
-        PushCharConst,
-        PushStringConst,
-        PushGlobalVar,
-        PushLocalVar,
-        SetGlobalVar,
-        SetLocalVar,
+            // 1 number
+            PushIntConst,
+            PushCharConst,
+            PushStringConst,
+            PushGlobalVar,
+            PushLocalVar,
+            SetGlobalVar,
+            SetLocalVar,
 
-        IfTrueGoto,
-        IfFalseGoto,
-        Goto,
-        FuncCall,
+            IfTrueGoto,
+            IfFalseGoto,
+            Goto,
+            FuncCall,
 
-        // 0 number
-        Return,
+            MakeArray,
 
-        PushTrue,
-        PushFalse,
+            // 0 number
+            Return,
 
-        Pop,
+            PushTrue,
+            PushFalse,
 
-        SetArrayIndex,
-        GetArrayIndex,
+            Pop,
 
-        Assign, // =
-        Minus, // -
-        Add, // +
-        Mul, // *
-        Div, // /
-        Mod, // %
-        LessThan, // <
-        LessEqual, // <=
-        GreaterThan, // >
-        GreaterEqual, // >=
-        Equal, // ==
-        NotEqual, // !=
+            SetArrayIndex,
+            GetArrayIndex,
 
-        And, // &&
-        Or, // ||
-        Not, // !
+            Assign, // =
+            Minus, // -
+            Add, // +
+            Mul, // *
+            Div, // /
+            Mod, // %
+            LessThan, // <
+            LessEqual, // <=
+            GreaterThan, // >
+            GreaterEqual, // >=
+            Equal, // ==
+            NotEqual, // !=
 
-        BAnd, // &
-        BOr, // |
-        BNot, // ~
-        BXor, // ^
-        LMove, // <<
-        RMove, // >>
-    };
+            And, // &&
+            Or, // ||
+            Not, // !
 
-    enum class IntroductionType {
-        _,
-        With1Number,
-        With0Number
-    };
+            BAnd, // &
+            BOr, // |
+            BNot, // ~
+            BXor, // ^
+            LMove, // <<
+            RMove, // >>
+        };
 
-    struct Introduction {
-        OpCode opCode;
+        enum class IntroductionType {
+            _,
+            With1Number,
+            With0Number
+        };
 
-        virtual IntroductionType introductionType() = 0;
-    };
+        struct Introduction {
+            OpCode opCode;
 
-    struct Introduction1Number : public Introduction {
-        int num;
+            virtual IntroductionType introductionType() = 0;
+        };
 
-        Introduction1Number(OpCode opCode, int num);
-        IntroductionType introductionType() override;
-    };
+        struct Introduction1Number : public Introduction {
+            int num;
 
-    struct Introduction0Number : public Introduction {
-        Introduction0Number(OpCode opCode);
-        IntroductionType introductionType() override;
-    };
+            Introduction1Number(OpCode opCode, int num);
+            IntroductionType introductionType() override;
+        };
 
-} // karl
+        struct Introduction0Number : public Introduction {
+            Introduction0Number(OpCode opCode);
+            IntroductionType introductionType() override;
+        };
+    }
+}
 
 #endif //KARL_INTRODUCTION_HPP

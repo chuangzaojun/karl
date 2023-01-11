@@ -1,4 +1,7 @@
 #include "vm.hpp"
 
-namespace karl::vm {
+namespace karl {
+    namespace vm {
+
+    }
 } // karl

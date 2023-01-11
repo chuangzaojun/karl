@@ -3,85 +3,86 @@
 
 #include <string>
 
-namespace karl::compiler {
+namespace karl {
+    namespace compiler {
+        enum class TokenType {
+            _,
 
-    enum class TokenType {
-        _,
+            EndOfFile,
 
-        EndOfFile,
+            Identifier,
 
-        Identifier,
+            LParen, // (
+            RParen, // )
+            LBracket, // [
+            RBracket, // ]
+            LBrace, // {
+            RBrace, // }
 
-        LParen, // (
-        RParen, // )
-        LBracket, // [
-        RBracket, // ]
-        LBrace, // {
-        RBrace, // }
+            Comma, // ,
+            Semicolon, // ;
+            Colon, // :
 
-        Comma, // ,
-        Semicolon, // ;
-        Colon, // :
+            Assign, // =
+            Minus, // -
+            Add, // +
+            Mul, // *
+            Div, // /
+            Mod, // %
+            LessThan, // <
+            LessEqual, // <=
+            GreaterThan, // >
+            GreaterEqual, // >=
+            Equal, // ==
+            NotEqual, // !=
 
-        Assign, // =
-        Minus, // -
-        Add, // +
-        Mul, // *
-        Div, // /
-        Mod, // %
-        LessThan, // <
-        LessEqual, // <=
-        GreaterThan, // >
-        GreaterEqual, // >=
-        Equal, // ==
-        NotEqual, // !=
+            And, // &&
+            Or, // ||
+            Not, // !
 
-        And, // &&
-        Or, // ||
-        Not, // !
+            BAnd, // &
+            BOr, // |
+            BNot, // ~
+            BXor, // ^
+            LMove, // <<
+            RMove, // >>
 
-        BAnd, // &
-        BOr, // |
-        BNot, // ~
-        BXor, // ^
-        LMove, // <<
-        RMove, // >>
+            // keywords
+            True,
+            False,
+            Var,
+            Func,
+            If,
+            Elif,
+            Else,
+            While,
+            Break,
+            Continue,
+            Return,
 
-        // keywords
-        True,
-        False,
-        Var,
-        Func,
-        If,
-        Elif,
-        Else,
-        While,
-        Break,
-        Continue,
-        Return,
+            // type
+            Int,
+            Bool,
+            String,
+            Char,
+            Void,
 
-        // type
-        Int,
-        Bool,
-        String,
-        Char,
-        Void,
+            // literals
+            IntLiteral,
+            StringLiteral,
+            CharLiteral
+        };
 
-        // literals
-        IntLiteral,
-        StringLiteral,
-        CharLiteral
-    };
+        struct Token {
+            TokenType type;
+            std::string literal;
+            int line;
+            int column;
 
-    struct Token {
-        TokenType type;
-        std::string literal;
-        int line;
-        int column;
+            Token(TokenType type, std::string literal, int line, int column);
+        };
+    }
 
-        Token(TokenType type, std::string literal, int line, int column);
-    };
-
-} // karl
+}
 
 #endif // KARL_TOKEN_HPP

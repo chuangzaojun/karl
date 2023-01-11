@@ -17,4 +17,4 @@ namespace karl::bytecode {
     IntroductionType Introduction0Number::introductionType() {
         return IntroductionType::With0Number;
     }
-} // karl
+}

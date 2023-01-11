@@ -5,16 +5,21 @@
 #include <vector>
 #include <string>
 
-namespace karl::bytecode {
+namespace karl {
+    namespace bytecode {
+        struct ByteCode {
+            int maxGlobalVarNum;
 
-    struct ByteCode {
-        std::vector<FuncInfo *> funcInfos;
+            std::vector<FuncInfo *> funcInfos;
 
-        std::vector<int> intConsts;
-        std::vector<char> charConsts;
-        std::vector<std::string> stringConsts;
-    };
+            std::vector<int> intConsts;
+            std::vector<char> charConsts;
+            std::vector<std::string> stringConsts;
 
-} // karl
+            ~ByteCode();
+        };
+    }
+
+}
 
 #endif //KARL_BYTECODE_HPP
