@@ -7,6 +7,11 @@ namespace karl {
         enum class OpCode {
             _,
 
+            // 2 number
+
+            FuncCall,
+            NativeFuncCall,
+
             // 1 number
             PushIntConst,
             PushCharConst,
@@ -19,8 +24,6 @@ namespace karl {
             IfTrueGoto,
             IfFalseGoto,
             Goto,
-            FuncCall,
-            NativeFuncCall,
 
             MakeArray,
 
@@ -70,6 +73,7 @@ namespace karl {
 
         enum class IntroductionType {
             _,
+            With2Number,
             With1Number,
             With0Number
         };
@@ -78,6 +82,14 @@ namespace karl {
             OpCode opCode;
 
             virtual IntroductionType introductionType() = 0;
+        };
+
+        struct Introduction2Number : public Introduction {
+            int numA;
+            int numB;
+
+            Introduction2Number(OpCode opCode, int numA, int numB);
+            IntroductionType introductionType() override;
         };
 
         struct Introduction1Number : public Introduction {

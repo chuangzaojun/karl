@@ -163,8 +163,8 @@ namespace karl {
         void Generator::generatePrefixExpr(PrefixExpr *expr) {
             std::map<OpType, bytecode::OpCode> opToOpCode = {
                     {OpType::Minus, bytecode::OpCode::PreMinus},
-                    {OpType::Not, bytecode::OpCode::Not},
-                    {OpType::BNot, bytecode::OpCode::BNot}
+                    {OpType::Not,   bytecode::OpCode::Not},
+                    {OpType::BNot,  bytecode::OpCode::BNot}
             };
             generateExpr(expr->right);
             writeIntroduction(new bytecode::Introduction0Number(opToOpCode[expr->op]));
@@ -172,27 +172,119 @@ namespace karl {
 
         void Generator::generateBinaryExpr(BinaryExpr *expr) {
             std::map<OpType, bytecode::OpCode> opToOpCode = {
-                    {OpType::Minus, bytecode::OpCode::Minus},
-                    {OpType::Add, bytecode::OpCode::Add},
-                    {OpType::Mul, bytecode::OpCode::Mul},
-                    {OpType::Div, bytecode::OpCode::Div},
-                    {OpType::Mod, bytecode::OpCode::Mod},
-                    {OpType::LessThan, bytecode::OpCode::LessThan},
-                    {OpType::LessEqual, bytecode::OpCode::LessEqual},
-                    {OpType::GreaterThan, bytecode::OpCode::GreaterThan},
+                    {OpType::Minus,        bytecode::OpCode::Minus},
+                    {OpType::Add,          bytecode::OpCode::Add},
+                    {OpType::Mul,          bytecode::OpCode::Mul},
+                    {OpType::Div,          bytecode::OpCode::Div},
+                    {OpType::Mod,          bytecode::OpCode::Mod},
+                    {OpType::LessThan,     bytecode::OpCode::LessThan},
+                    {OpType::LessEqual,    bytecode::OpCode::LessEqual},
+                    {OpType::GreaterThan,  bytecode::OpCode::GreaterThan},
                     {OpType::GreaterEqual, bytecode::OpCode::GreaterEqual},
-                    {OpType::Equal, bytecode::OpCode::Equal},
-                    {OpType::NotEqual, bytecode::OpCode::NotEqual},
-                    {OpType::And, bytecode::OpCode::And},
-                    {OpType::Or, bytecode::OpCode::Or},
-                    {OpType::BAnd, bytecode::OpCode::BAnd},
-                    {OpType::BOr, bytecode::OpCode::BOr},
-                    {OpType::LMove, bytecode::OpCode::LMove},
-                    {OpType::RMove, bytecode::OpCode::RMove}
+                    {OpType::Equal,        bytecode::OpCode::Equal},
+                    {OpType::NotEqual,     bytecode::OpCode::NotEqual},
+                    {OpType::And,          bytecode::OpCode::And},
+                    {OpType::Or,           bytecode::OpCode::Or},
+                    {OpType::BAnd,         bytecode::OpCode::BAnd},
+                    {OpType::BOr,          bytecode::OpCode::BOr},
+                    {OpType::LMove,        bytecode::OpCode::LMove},
+                    {OpType::RMove,        bytecode::OpCode::RMove}
             };
             generateExpr(expr->left);
             generateExpr(expr->right);
             writeIntroduction(new bytecode::Introduction0Number(opToOpCode[expr->op]));
+        }
+
+        void Generator::generateAssignExpr(AssignExpr *expr) {
+            if (expr->left->exprType() == ExprType::ArrayIndex) {
+                generateExpr(((ArrayIndexExpr *) expr->left)->array);
+                generateExpr(((ArrayIndexExpr *) expr->left)->index);
+                generateExpr(expr->right);
+                writeIntroduction(new bytecode::Introduction0Number(bytecode::OpCode::SetArrayIndex));
+            } else {
+                generateExpr(expr->right);
+                if (curBlock->varTable->isLocalVar(((IdentifierExpr *) expr->left)->identifier)) {
+                    writeIntroduction(new bytecode::Introduction1Number(bytecode::OpCode::SetLocalVar,
+                                                                        curBlock->varTable->getIndex(
+                                                                                ((IdentifierExpr *) expr->left)
+                                                                                        ->identifier)));
+                } else {
+                    writeIntroduction(new bytecode::Introduction1Number(bytecode::OpCode::SetGlobalVar,
+                                                                        program->varTable->getIndex(
+                                                                                ((IdentifierExpr *) expr->left)
+                                                                                        ->identifier)));
+                }
+            }
+        }
+
+        void Generator::generateIdentifierExpr(IdentifierExpr *expr) {
+            if (curBlock->varTable->isLocalVar(expr->identifier)) {
+                writeIntroduction(new bytecode::Introduction1Number(bytecode::OpCode::PushLocalVar,
+                                                                    curBlock->varTable->getIndex(expr->identifier)));
+            } else {
+                writeIntroduction(new bytecode::Introduction1Number(bytecode::OpCode::PushGlobalVar,
+                                                                    program->varTable->getIndex(expr->identifier)));
+            }
+        }
+
+        void Generator::generateFuncCallExpr(FuncCallExpr *expr) {
+            for (int i = expr->arguments.size() - 1; i >= 0; i--) {
+                generateExpr(expr->arguments[i]);
+            }
+            if (((IdentifierExpr *) expr->name)->identifier == "print") {
+                writeIntroduction(new bytecode::Introduction2Number(bytecode::OpCode::NativeFuncCall, expr->arguments
+                        .size(), 0));
+            }
+            writeIntroduction(new bytecode::Introduction2Number(bytecode::OpCode::FuncCall, expr->arguments.size(),
+                                                                program->funcTable->getIndex(
+                                                                        ((IdentifierExpr *) expr->name)->identifier)));
+        }
+
+        void Generator::generateArrayIndexExpr(ArrayIndexExpr *expr) {
+            generateExpr(expr->array);
+            generateExpr(expr->index);
+            writeIntroduction(new bytecode::Introduction0Number(bytecode::OpCode::GetArrayIndex));
+        }
+
+        void Generator::generateArrayLiteralExpr(ArrayLiteralExpr *expr) {
+            for (int i = expr->exprs.size() - 1; i >= 0; i--) {
+                generateExpr(expr->exprs[i]);
+            }
+            writeIntroduction(new bytecode::Introduction1Number(bytecode::OpCode::MakeArray, expr->exprs.size()));
+        }
+
+        void Generator::generateIntExpr(IntExpr *expr) {
+            writeIntroduction(new bytecode::Introduction1Number(bytecode::OpCode::PushIntConst, writeIntConst(
+                    (expr->value))));
+        }
+
+        void Generator::generateCharExpr(CharExpr *expr) {
+            writeIntroduction(new bytecode::Introduction1Number(bytecode::OpCode::PushCharConst, writeCharConst(
+                    (expr->value))));
+        }
+
+        void Generator::generateStringExpr(StringExpr *expr) {
+            writeIntroduction(new bytecode::Introduction1Number(bytecode::OpCode::PushStringConst, writeStringConst(
+                    (expr->value))));
+        }
+
+        void Generator::generateBoolExpr(BoolExpr *expr) {
+            if (expr->value == true) {
+                writeIntroduction(new bytecode::Introduction0Number(bytecode::OpCode::PushTrue));
+            } else {
+                writeIntroduction(new bytecode::Introduction0Number(bytecode::OpCode::PushFalse));
+            }
+        }
+
+        void Generator::generateTypeConversionExpr(TypeConversionExpr *expr) {
+            std::map<SingleObjectType, bytecode::OpCode> typeToOpCode = {
+                    {SingleObjectType::Int, bytecode::OpCode::TypeToInt},
+                    {SingleObjectType::Bool, bytecode::OpCode::TypeToBool},
+                    {SingleObjectType::String, bytecode::OpCode::TypeToString},
+                    {SingleObjectType::Char, bytecode::OpCode::TypeToChar}
+            };
+            generateExpr(expr->expr);
+            writeIntroduction(new bytecode::Introduction0Number(typeToOpCode[expr->targetType]));
         }
     }
 }

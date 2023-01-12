@@ -18,5 +18,15 @@ namespace karl {
         IntroductionType Introduction0Number::introductionType() {
             return IntroductionType::With0Number;
         }
+
+        Introduction2Number::Introduction2Number(OpCode opCode, int numA, int numB) {
+            this->opCode = opCode;
+            this->numA = numA;
+            this->numB = numB;
+        }
+
+        IntroductionType Introduction2Number::introductionType() {
+            return IntroductionType::With2Number;
+        }
     }
 }
