@@ -1,8 +1,8 @@
-#include "byte_code.hpp"
+#include "bytecode.hpp"
 
 namespace karl {
     namespace bytecode {
-        ByteCode::~ByteCode() {
+        Bytecode::~Bytecode() {
             for (FuncInfo *funcInfo: funcInfos) {
                 delete funcInfo;
             }

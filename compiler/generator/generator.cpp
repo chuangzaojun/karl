@@ -4,13 +4,13 @@ namespace karl {
     namespace compiler {
         compiler::Generator::Generator(Program *program) {
             this->program = program;
-            this->byteCode = new bytecode::ByteCode();
+            this->bytecode = new bytecode::Bytecode();
         }
 
-        bytecode::ByteCode *Generator::generateBytecode() {
-            byteCode->maxGlobalVarNum = program->varTable->globalVarNum();
-            byteCode->funcInfos.push_back(new bytecode::FuncInfo);
-            curFuncInfo = byteCode->funcInfos[0];
+        bytecode::Bytecode *Generator::generateBytecode() {
+            bytecode->maxGlobalVarNum = program->varTable->globalVarNum();
+            bytecode->funcInfos.push_back(new bytecode::FuncInfo);
+            curFuncInfo = bytecode->funcInfos[0];
             curStackSize = 0;
             for (Stmt *stmt: program->stmts) {
                 if (stmt->stmtType() == StmtType::VarDef) {
@@ -19,16 +19,10 @@ namespace karl {
             }
             for (Stmt *stmt: program->stmts) {
                 if (stmt->stmtType() == StmtType::FuncDef) {
-                    if (((IdentifierExpr *) ((FuncDefStmt *) stmt)->name)->identifier == "main") {
-                        curFuncInfo = byteCode->funcInfos[0];
-                    } else {
-                        byteCode->funcInfos.push_back(new bytecode::FuncInfo());
-                        curFuncInfo = byteCode->funcInfos[byteCode->funcInfos.size() - 1];
-                    }
                     generateFuncDef((FuncDefStmt *) stmt);
                 }
             }
-            return byteCode;
+            return bytecode;
         }
 
         int Generator::writeIntroduction(bytecode::Introduction *introduction) {
@@ -79,7 +73,8 @@ namespace karl {
             if (curStackSize > curFuncInfo->maxStackSize) {
                 curFuncInfo->maxStackSize = curStackSize;
             }
-            if (introduction->opCode == bytecode::OpCode::PushLocalVar || introduction->opCode == bytecode::OpCode::SetLocalVar) {
+            if (introduction->opCode == bytecode::OpCode::PushLocalVar ||
+                introduction->opCode == bytecode::OpCode::SetLocalVar) {
                 if (((bytecode::Introduction1Number *) introduction)->num > curFuncInfo->maxLocalVarNum) {
                     curFuncInfo->maxLocalVarNum = ((bytecode::Introduction1Number *) introduction)->num;
                 }
@@ -88,18 +83,116 @@ namespace karl {
         }
 
         int Generator::writeIntConst(int value) {
-            byteCode->intConsts.push_back(value);
-            return byteCode->intConsts.size() - 1;
+            bytecode->intConsts.push_back(value);
+            return bytecode->intConsts.size() - 1;
         }
 
         int Generator::writeCharConst(char value) {
-            byteCode->charConsts.push_back(value);
-            return byteCode->charConsts.size() - 1;
+            bytecode->charConsts.push_back(value);
+            return bytecode->charConsts.size() - 1;
         }
 
         int Generator::writeStringConst(std::string value) {
-            byteCode->stringConsts.push_back(value);
-            return byteCode->stringConsts.size() - 1;
+            bytecode->stringConsts.push_back(value);
+            return bytecode->stringConsts.size() - 1;
+        }
+
+        void Generator::generateGlobalVarDef(VarDefStmt *stmt) {
+            for (int i = 0; i < stmt->vars.size(); i++) {
+                if (stmt->initValues[i] == nullptr) {
+                    continue;
+                }
+                generateExpr(stmt->initValues[i]);
+                writeIntroduction(new bytecode::Introduction1Number(bytecode::OpCode::SetGlobalVar,
+                                                                    program->varTable->getIndex(
+                                                                            ((IdentifierExpr *) stmt->vars[i])->identifier)));
+            }
+        }
+
+        void Generator::generateFuncDef(FuncDefStmt *stmt) {
+            if (((IdentifierExpr *) stmt->name)->identifier == "main") {
+                curFuncInfo = bytecode->funcInfos[0];
+            } else {
+                bytecode->funcInfos.push_back(new bytecode::FuncInfo());
+                curFuncInfo = bytecode->funcInfos[bytecode->funcInfos.size() - 1];
+            }
+            curBlock = stmt->block;
+            generateBlock(stmt->block);
+        }
+
+        void Generator::generateExpr(Expr *expr) {
+            switch (expr->exprType()) {
+                case ExprType::Prefix:
+                    generatePrefixExpr((PrefixExpr *) expr);
+                    break;
+                case ExprType::Binary:
+                    generateBinaryExpr((BinaryExpr *) expr);
+                    break;
+                case ExprType::Assign:
+                    generateAssignExpr((AssignExpr *) expr);
+                    break;
+                case ExprType::Identifier:
+                    generateIdentifierExpr((IdentifierExpr *) expr);
+                    break;
+                case ExprType::FuncCall:
+                    generateFuncCallExpr((FuncCallExpr *) expr);
+                    break;
+                case ExprType::ArrayIndex:
+                    generateArrayIndexExpr((ArrayIndexExpr *) expr);
+                    break;
+                case ExprType::ArrayLiteral:
+                    generateArrayLiteralExpr((ArrayLiteralExpr *) expr);
+                    break;
+                case ExprType::Int:
+                    generateIntExpr((IntExpr *) expr);
+                    break;
+                case ExprType::Char:
+                    generateCharExpr((CharExpr *) expr);
+                    break;
+                case ExprType::String:
+                    generateStringExpr((StringExpr *) expr);
+                    break;
+                case ExprType::Bool:
+                    generateBoolExpr((BoolExpr *) expr);
+                case ExprType::TypeConversion:
+                    generateTypeConversionExpr((TypeConversionExpr *) expr);
+                    break;
+            }
+        }
+
+        void Generator::generatePrefixExpr(PrefixExpr *expr) {
+            std::map<OpType, bytecode::OpCode> opToOpCode = {
+                    {OpType::Minus, bytecode::OpCode::PreMinus},
+                    {OpType::Not, bytecode::OpCode::Not},
+                    {OpType::BNot, bytecode::OpCode::BNot}
+            };
+            generateExpr(expr->right);
+            writeIntroduction(new bytecode::Introduction0Number(opToOpCode[expr->op]));
+        }
+
+        void Generator::generateBinaryExpr(BinaryExpr *expr) {
+            std::map<OpType, bytecode::OpCode> opToOpCode = {
+                    {OpType::Minus, bytecode::OpCode::Minus},
+                    {OpType::Add, bytecode::OpCode::Add},
+                    {OpType::Mul, bytecode::OpCode::Mul},
+                    {OpType::Div, bytecode::OpCode::Div},
+                    {OpType::Mod, bytecode::OpCode::Mod},
+                    {OpType::LessThan, bytecode::OpCode::LessThan},
+                    {OpType::LessEqual, bytecode::OpCode::LessEqual},
+                    {OpType::GreaterThan, bytecode::OpCode::GreaterThan},
+                    {OpType::GreaterEqual, bytecode::OpCode::GreaterEqual},
+                    {OpType::Equal, bytecode::OpCode::Equal},
+                    {OpType::NotEqual, bytecode::OpCode::NotEqual},
+                    {OpType::And, bytecode::OpCode::And},
+                    {OpType::Or, bytecode::OpCode::Or},
+                    {OpType::BAnd, bytecode::OpCode::BAnd},
+                    {OpType::BOr, bytecode::OpCode::BOr},
+                    {OpType::LMove, bytecode::OpCode::LMove},
+                    {OpType::RMove, bytecode::OpCode::RMove}
+            };
+            generateExpr(expr->left);
+            generateExpr(expr->right);
+            writeIntroduction(new bytecode::Introduction0Number(opToOpCode[expr->op]));
         }
     }
 }

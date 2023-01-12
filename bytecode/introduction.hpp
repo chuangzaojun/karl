@@ -61,6 +61,11 @@ namespace karl {
             PreMinus, // -
             Not, // !
             BNot, // ~
+
+            TypeToInt,
+            TypeToString,
+            TypeToChar,
+            TypeToBool
         };
 
         enum class IntroductionType {

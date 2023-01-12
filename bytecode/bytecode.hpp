@@ -1,5 +1,5 @@
-#ifndef KARL_BYTE_CODE_HPP
-#define KARL_BYTE_CODE_HPP
+#ifndef KARL_BYTECODE_HPP
+#define KARL_BYTECODE_HPP
 
 #include "func_info.hpp"
 #include <vector>
@@ -7,7 +7,7 @@
 
 namespace karl {
     namespace bytecode {
-        struct ByteCode {
+        struct Bytecode {
             int maxGlobalVarNum;
 
             std::vector<FuncInfo *> funcInfos;
@@ -16,10 +16,10 @@ namespace karl {
             std::vector<char> charConsts;
             std::vector<std::string> stringConsts;
 
-            ~ByteCode();
+            ~Bytecode();
         };
     }
 
 }
 
-#endif //KARL_BYTE_CODE_HPP
+#endif //KARL_BYTECODE_HPP
