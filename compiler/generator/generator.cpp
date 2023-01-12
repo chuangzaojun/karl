@@ -278,10 +278,10 @@ namespace karl {
 
         void Generator::generateTypeConversionExpr(TypeConversionExpr *expr) {
             std::map<SingleObjectType, bytecode::OpCode> typeToOpCode = {
-                    {SingleObjectType::Int, bytecode::OpCode::TypeToInt},
-                    {SingleObjectType::Bool, bytecode::OpCode::TypeToBool},
+                    {SingleObjectType::Int,    bytecode::OpCode::TypeToInt},
+                    {SingleObjectType::Bool,   bytecode::OpCode::TypeToBool},
                     {SingleObjectType::String, bytecode::OpCode::TypeToString},
-                    {SingleObjectType::Char, bytecode::OpCode::TypeToChar}
+                    {SingleObjectType::Char,   bytecode::OpCode::TypeToChar}
             };
             generateExpr(expr->expr);
             writeIntroduction(new bytecode::Introduction0Number(typeToOpCode[expr->targetType]));
