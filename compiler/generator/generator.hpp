@@ -18,11 +18,22 @@ namespace karl {
             int writeIntConst(int value);
             int writeCharConst(char value);
             int writeStringConst(std::string value);
+            int curIntroductionNum();
+
+            void writeNullValue(ObjectType *type);
 
             void generateGlobalVarDef(VarDefStmt *stmt);
             void generateFuncDef(FuncDefStmt *stmt);
 
-            void generateBlock(Block *block); // this function does not change the var curBlock
+            void generateStmt(Stmt *stmt);
+            void generateBlock(); // this function does not change the var curBlock
+            void generateLocalVarDefStmt(VarDefStmt *stmt);
+            void generateIfStmt(IfStmt *stmt);
+            void generateWhileStmt(WhileStmt *stmt);
+            void generateExprStmt(ExprStmt *stmt);
+            void generateBreakStmt(BreakStmt *stmt);
+            void generateContinueStmt(ContinueStmt *stmt);
+            void generateReturnStmt(ReturnStmt *stmt);
 
             void generateExpr(Expr *expr);
             void generatePrefixExpr(PrefixExpr *expr);

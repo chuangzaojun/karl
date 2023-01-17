@@ -1,5 +1,6 @@
 #include "compiler/parser/parser.hpp"
 #include "compiler/type_checker/type_checker.hpp"
+#include "compiler/generator/generator.hpp"
 #include <iostream>
 #include <vector>
 #include <map>
@@ -27,5 +28,7 @@ int main() {
     compiler::Program *program = parser->parseProgram();
     compiler::TypeChecker *tc = new compiler::TypeChecker(program);
     tc->checkProgram();
+    compiler::Generator *generator = new karl::compiler::Generator(program);
+    bytecode::Bytecode *bytecode = generator->generateBytecode();
     return 0;
 }

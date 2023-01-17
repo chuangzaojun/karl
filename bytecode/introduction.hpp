@@ -21,14 +21,15 @@ namespace karl {
             SetGlobalVar,
             SetLocalVar,
 
-            IfTrueGoto,
-            IfFalseGoto,
+            GotoIfTrue,
+            GotoIfFalse,
             Goto,
 
             MakeArray,
 
             // 0 number
             Return,
+            ReturnNull,
 
             PushTrue,
             PushFalse,

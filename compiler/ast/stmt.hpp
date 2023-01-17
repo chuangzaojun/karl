@@ -32,7 +32,9 @@ namespace karl {
         struct Block : public Stmt {
             std::vector<Stmt *> stmts;
             std::vector<Stmt *> breakStmts;
+            std::vector<int> breakIntroductionIndexes;
             std::vector<Stmt *> continueStmts;
+            std::vector<int> continueIntroductionIndexes;
             bool isLoopBlock;
             VarTable *varTable;
 

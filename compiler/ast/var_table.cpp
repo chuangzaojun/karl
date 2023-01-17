@@ -27,7 +27,7 @@ namespace karl {
 
         bool VarTable::isLocalVar(std::string var) {
             if (outer == nullptr) {
-                return false;
+                return true;
             }
             return outer->isLocalVar(var);
         }
