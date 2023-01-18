@@ -3,9 +3,9 @@
 namespace karl {
     namespace vm {
 
-        Frame::Frame(int maxStackSize, int maxVarNum) {
-            stack.resize(maxStackSize);
-            vars.resize(maxVarNum);
+        Frame::Frame(bytecode::FuncInfo *funcInfo) {
+            stack.resize(funcInfo->maxStackSize);
+            vars.resize(funcInfo->maxLocalVarNum);
         }
 
         int Frame::size() {
@@ -19,11 +19,11 @@ namespace karl {
             return temp;
         }
 
-        int Frame::push(Object *object) {
+        Object *Frame::push(Object *object) {
             stack[stackSize] = object;
             int temp = stackSize;
             stackSize++;
-            return temp;
+            return object;
         }
 
         void Frame::setVar(int index, Object *object) {
@@ -32,6 +32,18 @@ namespace karl {
 
         Object *Frame::getVar(int index) {
             return vars[index];
+        }
+
+        bytecode::FuncInfo *Frame::getFuncInfo() {
+            return funcInfo;
+        }
+
+        int Frame::getPc() {
+            return pc;
+        }
+
+        void Frame::setPc(int newPc) {
+            pc = newPc;
         }
     }
 }

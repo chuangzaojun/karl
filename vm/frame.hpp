@@ -2,6 +2,7 @@
 #define KARL_FRAME_HPP
 
 #include "object.hpp"
+#include "../bytecode/bytecode.hpp"
 
 namespace karl {
     namespace vm {
@@ -12,16 +13,23 @@ namespace karl {
             std::vector<Object *> vars;
             int stackSize;
 
+            int pc;
+            bytecode::FuncInfo *funcInfo;
+
         public:
 
-            int push(Object *object);
+            Object *push(Object *object);
             Object *pop();
             int size();
 
             void setVar(int index, Object *object);
             Object *getVar(int index);
 
-            Frame(int maxStackSize, int maxVarNum);
+            bytecode::FuncInfo *getFuncInfo();
+            int getPc();
+            void setPc(int newPc);
+
+            Frame(bytecode::FuncInfo *funcInfo);
         };
 
     }
