@@ -25,8 +25,161 @@ namespace karl {
         void VM::run() {
             globalVars.resize(bytecode->maxGlobalVarNum);
             pushFrame(0);
-            for (; ; ) {
-
+            while (stack.size() > 0) {
+                if (curFrame->getFuncInfo()->introductions[curFrame->getPc()]->introductionType() ==
+                    bytecode::IntroductionType::With2Number) {
+                    int numA = ((bytecode::Introduction2Number *) curFrame->getFuncInfo()
+                            ->introductions[curFrame->getPc()])->numA;
+                    int numB = ((bytecode::Introduction2Number *) curFrame->getFuncInfo()
+                            ->introductions[curFrame->getPc()])->numB;
+                    switch (curFrame->getFuncInfo()->introductions[curFrame->getPc()]->opCode) {
+                        case bytecode::OpCode::FuncCall:
+                            runFuncCall(numA, numB);
+                            break;
+                        case bytecode::OpCode::NativeFuncCall:
+                            runNativeFuncCall(numA, numB);
+                            break;
+                    }
+                } else if (curFrame->getFuncInfo()->introductions[curFrame->getPc()]->introductionType() ==
+                           bytecode::IntroductionType::With1Number) {
+                    int num = ((bytecode::Introduction1Number *) curFrame->getFuncInfo()
+                            ->introductions[curFrame->getPc()])->num;
+                    switch (curFrame->getFuncInfo()->introductions[curFrame->getPc()]->opCode) {
+                        case bytecode::OpCode::PushIntConst:
+                            runPushIntConst(num);
+                            break;
+                        case bytecode::OpCode::PushCharConst:
+                            runPushCharConst(num);
+                            break;
+                        case bytecode::OpCode::PushStringConst:
+                            runPushStringConst(num);
+                            break;
+                        case bytecode::OpCode::PushGlobalVar:
+                            runPushGlobalVar(num);
+                            break;
+                        case bytecode::OpCode::PushLocalVar:
+                            runPushLocalVar(num);
+                            break;
+                        case bytecode::OpCode::SetGlobalVar:
+                            runSetGlobalVar(num);
+                            break;
+                        case bytecode::OpCode::SetLocalVar:
+                            runSetLocalVar(num);
+                            break;
+                        case bytecode::OpCode::GotoIfTrue:
+                            runGotoIfTrue(num);
+                            break;
+                        case bytecode::OpCode::GotoIfFalse:
+                            runGotoIfFalse(num);
+                            break;
+                        case bytecode::OpCode::Goto:
+                            runGoto(num);
+                            break;
+                        case bytecode::OpCode::MakeArray:
+                            runMakeArray(num);
+                            break;
+                    }
+                } else {
+                    switch (curFrame->getFuncInfo()->introductions[curFrame->getPc()]->opCode) {
+                        case bytecode::OpCode::Return:
+                            runReturn();
+                            break;
+                        case bytecode::OpCode::ReturnNull:
+                            runReturnNull();
+                            break;
+                        case bytecode::OpCode::PushTrue:
+                            runPushTrue();
+                            break;
+                        case bytecode::OpCode::PushFalse:
+                            runPushFalse();
+                            break;
+                        case bytecode::OpCode::Pop:
+                            runPop();
+                            break;
+                        case bytecode::OpCode::SetArrayIndex:
+                            runSetArrayIndex();
+                            break;
+                        case bytecode::OpCode::GetArrayIndex:
+                            runGetArrayIndex();
+                            break;
+                        case bytecode::OpCode::Minus:
+                            runMinus();
+                            break;
+                        case bytecode::OpCode::Add:
+                            runAdd();
+                            break;
+                        case bytecode::OpCode::Mul:
+                            runMul();
+                            break;
+                        case bytecode::OpCode::Div:
+                            runDiv();
+                            break;
+                        case bytecode::OpCode::Mod:
+                            runMod();
+                            break;
+                        case bytecode::OpCode::LessThan:
+                            runLessThan();
+                            break;
+                        case bytecode::OpCode::LessEqual:
+                            runLessEqual();
+                            break;
+                        case bytecode::OpCode::GreaterThan:
+                            runGreaterThan();
+                            break;
+                        case bytecode::OpCode::GreaterEqual:
+                            runGreaterEqual();
+                            break;
+                        case bytecode::OpCode::Equal:
+                            runEqual();
+                            break;
+                        case bytecode::OpCode::NotEqual:
+                            runNotEqual();
+                            break;
+                        case bytecode::OpCode::And:
+                            runAnd();
+                            break;
+                        case bytecode::OpCode::Or:
+                            runOr();
+                            break;
+                        case bytecode::OpCode::BAnd:
+                            runBAnd();
+                            break;
+                        case bytecode::OpCode::BOr:
+                            runBOr();
+                            break;
+                        case bytecode::OpCode::BXor:
+                            runBXor();
+                            break;
+                        case bytecode::OpCode::LMove:
+                            runLMove();
+                            break;
+                        case bytecode::OpCode::RMove:
+                            runRMove();
+                            break;
+                        case bytecode::OpCode::PreMinus:
+                            runPreMinus();
+                            break;
+                        case bytecode::OpCode::Not:
+                            runNot();
+                            break;
+                        case bytecode::OpCode::BNot:
+                            runBNot();
+                            break;
+                        case bytecode::OpCode::TypeToInt:
+                            runTypeToInt();
+                            break;
+                        case bytecode::OpCode::TypeToString:
+                            runTypeToString();
+                            break;
+                        case bytecode::OpCode::TypeToChar:
+                            runTypeToChar();
+                            break;
+                        case bytecode::OpCode::TypeToBool:
+                            runTypeToBool();
+                            break;
+                    }
+                }
+                curFrame->setPc(curFrame->getPc() + 1);
             }
         }
 

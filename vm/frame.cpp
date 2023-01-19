@@ -4,8 +4,11 @@ namespace karl {
     namespace vm {
 
         Frame::Frame(bytecode::FuncInfo *funcInfo) {
+            this->funcInfo = funcInfo;
             stack.resize(funcInfo->maxStackSize);
             vars.resize(funcInfo->maxLocalVarNum);
+            this->stackSize = 0;
+            this->pc = 0;
         }
 
         int Frame::size() {
@@ -21,7 +24,6 @@ namespace karl {
 
         Object *Frame::push(Object *object) {
             stack[stackSize] = object;
-            int temp = stackSize;
             stackSize++;
             return object;
         }
