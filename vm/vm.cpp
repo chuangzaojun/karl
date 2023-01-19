@@ -192,6 +192,7 @@ namespace karl {
             for (int i = 0; i < argumentNum; i++) {
                 curFrame->setVar(i, arguments[i]);
             }
+            curFrame->setPc(-1);
         }
 
         void VM::runNativeFuncCall(int argumentNum, int funcIndex) {
