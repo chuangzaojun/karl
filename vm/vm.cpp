@@ -7,6 +7,7 @@ namespace karl {
         VM::VM(bytecode::Bytecode *bytecode, Heap *heap) {
             this->bytecode = bytecode;
             this->heap = heap;
+            globalVars.resize(bytecode->maxGlobalVarNum + 10);
         }
 
         void VM::pushFrame(int funcIndex) {
@@ -27,10 +28,10 @@ namespace karl {
             pushFrame(0);
             while (stack.size() > 0) {
                 if (curFrame->getFuncInfo()->introductions[curFrame->getPc()]->introductionType() ==
-                    bytecode::IntroductionType::With2Number) {
-                    int numA = ((bytecode::Introduction2Number *) curFrame->getFuncInfo()
+                    bytecode::InstructionType::With2Number) {
+                    int numA = ((bytecode::Instruction2Number *) curFrame->getFuncInfo()
                             ->introductions[curFrame->getPc()])->numA;
-                    int numB = ((bytecode::Introduction2Number *) curFrame->getFuncInfo()
+                    int numB = ((bytecode::Instruction2Number *) curFrame->getFuncInfo()
                             ->introductions[curFrame->getPc()])->numB;
                     switch (curFrame->getFuncInfo()->introductions[curFrame->getPc()]->opCode) {
                         case bytecode::OpCode::FuncCall:
@@ -41,8 +42,8 @@ namespace karl {
                             break;
                     }
                 } else if (curFrame->getFuncInfo()->introductions[curFrame->getPc()]->introductionType() ==
-                           bytecode::IntroductionType::With1Number) {
-                    int num = ((bytecode::Introduction1Number *) curFrame->getFuncInfo()
+                           bytecode::InstructionType::With1Number) {
+                    int num = ((bytecode::Instruction1Number *) curFrame->getFuncInfo()
                             ->introductions[curFrame->getPc()])->num;
                     switch (curFrame->getFuncInfo()->introductions[curFrame->getPc()]->opCode) {
                         case bytecode::OpCode::PushIntConst:

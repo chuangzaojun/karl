@@ -3,7 +3,7 @@
 namespace karl {
     namespace bytecode {
         FuncInfo::~FuncInfo() {
-            for (Introduction *introduction: introductions) {
+            for (Instruction *introduction: introductions) {
                 delete introduction;
             }
         }

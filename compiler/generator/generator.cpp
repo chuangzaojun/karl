@@ -26,7 +26,7 @@ namespace karl {
             return bytecode;
         }
 
-        int Generator::writeIntroduction(bytecode::Introduction *introduction) {
+        int Generator::writeInstruction(bytecode::Instruction *introduction) {
             curFuncInfo->introductions.push_back(introduction);
             switch (introduction->opCode) {
                 case bytecode::OpCode::PushIntConst:
@@ -67,7 +67,7 @@ namespace karl {
                 case bytecode::OpCode::NativeFuncCall:
                 case bytecode::OpCode::FuncCall:
                 case bytecode::OpCode::MakeArray:
-                    curStackSize -= ((bytecode::Introduction1Number *) introduction)->num;
+                    curStackSize -= ((bytecode::Instruction1Number *) introduction)->num;
                     curStackSize++;
                     break;
             }
@@ -76,8 +76,8 @@ namespace karl {
             }
             if (introduction->opCode == bytecode::OpCode::PushLocalVar ||
                 introduction->opCode == bytecode::OpCode::SetLocalVar) {
-                if (((bytecode::Introduction1Number *) introduction)->num + 1 > curFuncInfo->maxLocalVarNum) {
-                    curFuncInfo->maxLocalVarNum = ((bytecode::Introduction1Number *) introduction)->num + 1;
+                if (((bytecode::Instruction1Number *) introduction)->num + 1 > curFuncInfo->maxLocalVarNum) {
+                    curFuncInfo->maxLocalVarNum = ((bytecode::Instruction1Number *) introduction)->num + 1;
                 }
             }
             return curFuncInfo->introductions.size() - 1;
@@ -105,9 +105,9 @@ namespace karl {
                 } else {
                     generateExpr(stmt->initValues[i]);
                 }
-                writeIntroduction(new bytecode::Introduction1Number(bytecode::OpCode::SetGlobalVar,
-                                                                    program->varTable->getIndex(
-                                                                            ((IdentifierExpr *) stmt->vars[i])->identifier)));
+                writeInstruction(new bytecode::Instruction1Number(bytecode::OpCode::SetGlobalVar,
+                                                                  program->varTable->getIndex(
+                                                                          ((IdentifierExpr *) stmt->vars[i])->identifier)));
             }
         }
 
@@ -122,10 +122,10 @@ namespace karl {
             generateBlock();
             curBlock = nullptr;
             if (stmt->objectType->singleObjectType() == SingleObjectType::Void) {
-                writeIntroduction(new bytecode::Introduction0Number(bytecode::OpCode::ReturnNull));
+                writeInstruction(new bytecode::Instruction0Number(bytecode::OpCode::ReturnNull));
             } else {
                 writeNullValue(stmt->objectType);
-                writeIntroduction(new bytecode::Introduction0Number(bytecode::OpCode::Return));
+                writeInstruction(new bytecode::Instruction0Number(bytecode::OpCode::Return));
             }
             curFuncInfo = nullptr;
         }
@@ -177,7 +177,7 @@ namespace karl {
                     {OpType::BNot,  bytecode::OpCode::BNot}
             };
             generateExpr(expr->right);
-            writeIntroduction(new bytecode::Introduction0Number(opToOpCode[expr->op]));
+            writeInstruction(new bytecode::Instruction0Number(opToOpCode[expr->op]));
         }
 
         void Generator::generateBinaryExpr(BinaryExpr *expr) {
@@ -202,7 +202,7 @@ namespace karl {
             };
             generateExpr(expr->left);
             generateExpr(expr->right);
-            writeIntroduction(new bytecode::Introduction0Number(opToOpCode[expr->op]));
+            writeInstruction(new bytecode::Instruction0Number(opToOpCode[expr->op]));
         }
 
         void Generator::generateAssignExpr(AssignExpr *expr) {
@@ -210,30 +210,30 @@ namespace karl {
                 generateExpr(((ArrayIndexExpr *) expr->left)->array);
                 generateExpr(((ArrayIndexExpr *) expr->left)->index);
                 generateExpr(expr->right);
-                writeIntroduction(new bytecode::Introduction0Number(bytecode::OpCode::SetArrayIndex));
+                writeInstruction(new bytecode::Instruction0Number(bytecode::OpCode::SetArrayIndex));
             } else {
                 generateExpr(expr->right);
                 if (curBlock->varTable->isLocalVar(((IdentifierExpr *) expr->left)->identifier)) {
-                    writeIntroduction(new bytecode::Introduction1Number(bytecode::OpCode::SetLocalVar,
-                                                                        curBlock->varTable->getIndex(
-                                                                                ((IdentifierExpr *) expr->left)
-                                                                                        ->identifier)));
+                    writeInstruction(new bytecode::Instruction1Number(bytecode::OpCode::SetLocalVar,
+                                                                      curBlock->varTable->getIndex(
+                                                                              ((IdentifierExpr *) expr->left)
+                                                                                      ->identifier)));
                 } else {
-                    writeIntroduction(new bytecode::Introduction1Number(bytecode::OpCode::SetGlobalVar,
-                                                                        program->varTable->getIndex(
-                                                                                ((IdentifierExpr *) expr->left)
-                                                                                        ->identifier)));
+                    writeInstruction(new bytecode::Instruction1Number(bytecode::OpCode::SetGlobalVar,
+                                                                      program->varTable->getIndex(
+                                                                              ((IdentifierExpr *) expr->left)
+                                                                                      ->identifier)));
                 }
             }
         }
 
         void Generator::generateIdentifierExpr(IdentifierExpr *expr) {
             if (curBlock->varTable->isLocalVar(expr->identifier)) {
-                writeIntroduction(new bytecode::Introduction1Number(bytecode::OpCode::PushLocalVar,
-                                                                    curBlock->varTable->getIndex(expr->identifier)));
+                writeInstruction(new bytecode::Instruction1Number(bytecode::OpCode::PushLocalVar,
+                                                                  curBlock->varTable->getIndex(expr->identifier)));
             } else {
-                writeIntroduction(new bytecode::Introduction1Number(bytecode::OpCode::PushGlobalVar,
-                                                                    program->varTable->getIndex(expr->identifier)));
+                writeInstruction(new bytecode::Instruction1Number(bytecode::OpCode::PushGlobalVar,
+                                                                  program->varTable->getIndex(expr->identifier)));
             }
         }
 
@@ -242,47 +242,48 @@ namespace karl {
                 generateExpr(expr->arguments[i]);
             }
             if (((IdentifierExpr *) expr->name)->identifier == "print") {
-                writeIntroduction(new bytecode::Introduction2Number(bytecode::OpCode::NativeFuncCall, expr->arguments
+                writeInstruction(new bytecode::Instruction2Number(bytecode::OpCode::NativeFuncCall, expr->arguments
                         .size(), 0));
+            } else {
+                writeInstruction(new bytecode::Instruction2Number(bytecode::OpCode::FuncCall, expr->arguments.size(),
+                                                                  program->funcTable->getIndex(
+                                                                          ((IdentifierExpr *) expr->name)->identifier)));
             }
-            writeIntroduction(new bytecode::Introduction2Number(bytecode::OpCode::FuncCall, expr->arguments.size(),
-                                                                program->funcTable->getIndex(
-                                                                        ((IdentifierExpr *) expr->name)->identifier)));
         }
 
         void Generator::generateArrayIndexExpr(ArrayIndexExpr *expr) {
             generateExpr(expr->array);
             generateExpr(expr->index);
-            writeIntroduction(new bytecode::Introduction0Number(bytecode::OpCode::GetArrayIndex));
+            writeInstruction(new bytecode::Instruction0Number(bytecode::OpCode::GetArrayIndex));
         }
 
         void Generator::generateArrayLiteralExpr(ArrayLiteralExpr *expr) {
             for (int i = expr->exprs.size() - 1; i >= 0; i--) {
                 generateExpr(expr->exprs[i]);
             }
-            writeIntroduction(new bytecode::Introduction1Number(bytecode::OpCode::MakeArray, expr->exprs.size()));
+            writeInstruction(new bytecode::Instruction1Number(bytecode::OpCode::MakeArray, expr->exprs.size()));
         }
 
         void Generator::generateIntExpr(IntExpr *expr) {
-            writeIntroduction(new bytecode::Introduction1Number(bytecode::OpCode::PushIntConst, writeIntConst(
+            writeInstruction(new bytecode::Instruction1Number(bytecode::OpCode::PushIntConst, writeIntConst(
                     (expr->value))));
         }
 
         void Generator::generateCharExpr(CharExpr *expr) {
-            writeIntroduction(new bytecode::Introduction1Number(bytecode::OpCode::PushCharConst, writeCharConst(
+            writeInstruction(new bytecode::Instruction1Number(bytecode::OpCode::PushCharConst, writeCharConst(
                     (expr->value))));
         }
 
         void Generator::generateStringExpr(StringExpr *expr) {
-            writeIntroduction(new bytecode::Introduction1Number(bytecode::OpCode::PushStringConst, writeStringConst(
+            writeInstruction(new bytecode::Instruction1Number(bytecode::OpCode::PushStringConst, writeStringConst(
                     (expr->value))));
         }
 
         void Generator::generateBoolExpr(BoolExpr *expr) {
             if (expr->value == true) {
-                writeIntroduction(new bytecode::Introduction0Number(bytecode::OpCode::PushTrue));
+                writeInstruction(new bytecode::Instruction0Number(bytecode::OpCode::PushTrue));
             } else {
-                writeIntroduction(new bytecode::Introduction0Number(bytecode::OpCode::PushFalse));
+                writeInstruction(new bytecode::Instruction0Number(bytecode::OpCode::PushFalse));
             }
         }
 
@@ -294,31 +295,31 @@ namespace karl {
                     {SingleObjectType::Char,   bytecode::OpCode::TypeToChar}
             };
             generateExpr(expr->expr);
-            writeIntroduction(new bytecode::Introduction0Number(typeToOpCode[expr->targetType]));
+            writeInstruction(new bytecode::Instruction0Number(typeToOpCode[expr->targetType]));
         }
 
         void Generator::writeNullValue(ObjectType *type) {
             switch (type->singleObjectType()) {
                 case SingleObjectType::Int:
-                    writeIntroduction(new bytecode::Introduction1Number(bytecode::OpCode::PushIntConst,
-                                                                        writeIntConst(0)));
+                    writeInstruction(new bytecode::Instruction1Number(bytecode::OpCode::PushIntConst,
+                                                                      writeIntConst(0)));
                     break;
                 case SingleObjectType::Char:
-                    writeIntroduction(new bytecode::Introduction1Number(bytecode::OpCode::PushCharConst,
-                                                                        writeCharConst(' ')));
+                    writeInstruction(new bytecode::Instruction1Number(bytecode::OpCode::PushCharConst,
+                                                                      writeCharConst(' ')));
                     break;
                 case SingleObjectType::String:
-                    writeIntroduction(new bytecode::Introduction1Number(bytecode::OpCode::PushStringConst,
-                                                                        writeStringConst("")));
+                    writeInstruction(new bytecode::Instruction1Number(bytecode::OpCode::PushStringConst,
+                                                                      writeStringConst("")));
                     break;
                 case SingleObjectType::Bool:
-                    writeIntroduction(new bytecode::Introduction0Number(bytecode::OpCode::PushFalse));
+                    writeInstruction(new bytecode::Instruction0Number(bytecode::OpCode::PushFalse));
                     break;
                 case SingleObjectType::Array:
                     for (int i = 0; i < ((ArrayObject *) type)->memberNum; i++) {
                         writeNullValue(((ArrayObject *) type)->memberType);
                     }
-                    writeIntroduction(new bytecode::Introduction1Number(bytecode::OpCode::MakeArray, ((ArrayObject *)
+                    writeInstruction(new bytecode::Instruction1Number(bytecode::OpCode::MakeArray, ((ArrayObject *)
                             type)->memberNum));
             }
         }
@@ -368,9 +369,9 @@ namespace karl {
                 } else {
                     generateExpr(stmt->initValues[i]);
                 }
-                writeIntroduction(new bytecode::Introduction1Number(bytecode::OpCode::SetLocalVar,
-                                                                    curBlock->varTable->getIndex(
-                                                                            ((IdentifierExpr *) stmt->vars[i])->identifier)));
+                writeInstruction(new bytecode::Instruction1Number(bytecode::OpCode::SetLocalVar,
+                                                                  curBlock->varTable->getIndex(
+                                                                          ((IdentifierExpr *) stmt->vars[i])->identifier)));
             }
         }
 
@@ -378,15 +379,15 @@ namespace karl {
             std::vector<int> gotoIntroductionIndexes;
             for (int i = 0; i < stmt->conditions.size(); i++) {
                 generateExpr(stmt->conditions[i]);
-                int introductionIndexTemp = writeIntroduction(new bytecode::Introduction1Number
-                        (bytecode::OpCode::GotoIfFalse, 0));
+                int introductionIndexTemp = writeInstruction(new bytecode::Instruction1Number
+                                                                     (bytecode::OpCode::GotoIfFalse, 0));
                 Block *temp = curBlock;
                 curBlock = stmt->blocks[i];
                 generateBlock();
                 curBlock = temp;
-                gotoIntroductionIndexes.push_back(writeIntroduction(new bytecode::Introduction1Number
-                (bytecode::OpCode::Goto, 0)));
-                ((bytecode::Introduction1Number *) curFuncInfo->introductions[introductionIndexTemp])->num =
+                gotoIntroductionIndexes.push_back(writeInstruction(new bytecode::Instruction1Number
+                                                                           (bytecode::OpCode::Goto, 0)));
+                ((bytecode::Instruction1Number *) curFuncInfo->introductions[introductionIndexTemp])->num =
                         curIntroductionNum();
             }
             if (stmt->conditions.size() < stmt->blocks.size()) {
@@ -396,7 +397,7 @@ namespace karl {
                 curBlock = temp;
             }
             for (int i: gotoIntroductionIndexes) {
-                ((bytecode::Introduction1Number *) curFuncInfo->introductions[i])->num = curIntroductionNum();
+                ((bytecode::Instruction1Number *) curFuncInfo->introductions[i])->num = curIntroductionNum();
             }
         }
 
@@ -407,44 +408,44 @@ namespace karl {
         void Generator::generateWhileStmt(WhileStmt *stmt) {
             int beginIndex = curIntroductionNum();
             generateExpr(stmt->condition);
-            int introductionIndexTemp = writeIntroduction(new bytecode::Introduction1Number
-                                                                  (bytecode::OpCode::GotoIfFalse, 0));
+            int introductionIndexTemp = writeInstruction(new bytecode::Instruction1Number
+                                                                 (bytecode::OpCode::GotoIfFalse, 0));
             Block *temp = curBlock;
             curBlock = stmt->block;
             generateBlock();
             curBlock = temp;
             for (int i: stmt->block->breakIntroductionIndexes) {
-                ((bytecode::Introduction1Number *) curFuncInfo->introductions[i])->num = curIntroductionNum();
+                ((bytecode::Instruction1Number *) curFuncInfo->introductions[i])->num = curIntroductionNum();
             }
             for (int i: stmt->block->continueIntroductionIndexes) {
-                ((bytecode::Introduction1Number *) curFuncInfo->introductions[i])->num = beginIndex;
+                ((bytecode::Instruction1Number *) curFuncInfo->introductions[i])->num = beginIndex;
             }
-            ((bytecode::Introduction1Number *) curFuncInfo->introductions[introductionIndexTemp])->num = curIntroductionNum();
+            ((bytecode::Instruction1Number *) curFuncInfo->introductions[introductionIndexTemp])->num = curIntroductionNum();
         }
 
         void Generator::generateExprStmt(ExprStmt *stmt) {
             generateExpr(stmt->expr);
             if (stmt->expr->objectType->singleObjectType() != SingleObjectType::Void) {
-                writeIntroduction(new bytecode::Introduction0Number(bytecode::OpCode::Pop));
+                writeInstruction(new bytecode::Instruction0Number(bytecode::OpCode::Pop));
             }
         }
 
         void Generator::generateBreakStmt(BreakStmt *stmt) {
-            stmt->loopBlock->breakIntroductionIndexes.push_back(writeIntroduction(new bytecode::Introduction1Number
-            (bytecode::OpCode::Goto, 0)));
+            stmt->loopBlock->breakIntroductionIndexes.push_back(writeInstruction(new bytecode::Instruction1Number
+                                                                                         (bytecode::OpCode::Goto, 0)));
         }
 
         void Generator::generateContinueStmt(ContinueStmt *stmt) {
-            stmt->loopBlock->continueIntroductionIndexes.push_back(writeIntroduction(new bytecode::Introduction1Number
-                                                                                          (bytecode::OpCode::Goto, 0)));
+            stmt->loopBlock->continueIntroductionIndexes.push_back(writeInstruction(new bytecode::Instruction1Number
+                                                                                            (bytecode::OpCode::Goto, 0)));
         }
 
         void Generator::generateReturnStmt(ReturnStmt *stmt) {
             if (stmt->expr != nullptr) {
                 generateExpr(stmt->expr);
-                writeIntroduction(new bytecode::Introduction0Number(bytecode::OpCode::Return));
+                writeInstruction(new bytecode::Instruction0Number(bytecode::OpCode::Return));
             } else {
-                writeIntroduction(new bytecode::Introduction0Number(bytecode::OpCode::ReturnNull));
+                writeInstruction(new bytecode::Instruction0Number(bytecode::OpCode::ReturnNull));
             }
         }
     }

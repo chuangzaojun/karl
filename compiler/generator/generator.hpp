@@ -14,7 +14,7 @@ namespace karl {
             bytecode::FuncInfo *curFuncInfo;
             int curStackSize;
 
-            int writeIntroduction(bytecode::Introduction *introduction);
+            int writeInstruction(bytecode::Instruction *introduction);
             int writeIntConst(int value);
             int writeCharConst(char value);
             int writeStringConst(std::string value);

@@ -1,5 +1,5 @@
-#ifndef KARL_INTRODUCTION_HPP
-#define KARL_INTRODUCTION_HPP
+#ifndef KARL_INSTRUCTION_HPP
+#define KARL_INSTRUCTION_HPP
 
 namespace karl {
     namespace bytecode {
@@ -72,39 +72,39 @@ namespace karl {
             TypeToBool
         };
 
-        enum class IntroductionType {
+        enum class InstructionType {
             _,
             With2Number,
             With1Number,
             With0Number
         };
 
-        struct Introduction {
+        struct Instruction {
             OpCode opCode;
 
-            virtual IntroductionType introductionType() = 0;
+            virtual InstructionType introductionType() = 0;
         };
 
-        struct Introduction2Number : public Introduction {
+        struct Instruction2Number : public Instruction {
             int numA;
             int numB;
 
-            Introduction2Number(OpCode opCode, int numA, int numB);
-            IntroductionType introductionType() override;
+            Instruction2Number(OpCode opCode, int numA, int numB);
+            InstructionType introductionType() override;
         };
 
-        struct Introduction1Number : public Introduction {
+        struct Instruction1Number : public Instruction {
             int num;
 
-            Introduction1Number(OpCode opCode, int num);
-            IntroductionType introductionType() override;
+            Instruction1Number(OpCode opCode, int num);
+            InstructionType introductionType() override;
         };
 
-        struct Introduction0Number : public Introduction {
-            Introduction0Number(OpCode opCode);
-            IntroductionType introductionType() override;
+        struct Instruction0Number : public Instruction {
+            Instruction0Number(OpCode opCode);
+            InstructionType introductionType() override;
         };
     }
 }
 
-#endif //KARL_INTRODUCTION_HPP
+#endif //KARL_INSTRUCTION_HPP

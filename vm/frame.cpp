@@ -5,8 +5,8 @@ namespace karl {
 
         Frame::Frame(bytecode::FuncInfo *funcInfo) {
             this->funcInfo = funcInfo;
-            stack.resize(funcInfo->maxStackSize);
-            vars.resize(funcInfo->maxLocalVarNum);
+            stack.resize(funcInfo->maxStackSize + 10);
+            vars.resize(funcInfo->maxLocalVarNum + 10);
             this->stackSize = 0;
             this->pc = 0;
         }

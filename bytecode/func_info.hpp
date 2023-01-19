@@ -1,7 +1,7 @@
 #ifndef KARL_FUNC_INFO_HPP
 #define KARL_FUNC_INFO_HPP
 
-#include "introduction.hpp"
+#include "instruction.hpp"
 #include <vector>
 
 namespace karl {
@@ -9,7 +9,7 @@ namespace karl {
         struct FuncInfo {
             int maxStackSize;
             int maxLocalVarNum;
-            std::vector<Introduction *> introductions;
+            std::vector<Instruction *> introductions;
 
             ~FuncInfo();
         };
