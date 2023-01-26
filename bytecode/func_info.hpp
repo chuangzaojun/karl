@@ -9,7 +9,9 @@ namespace karl {
         struct FuncInfo {
             int maxStackSize;
             int maxLocalVarNum;
-            std::vector<Instruction *> introductions;
+            std::vector<Instruction *> instructions;
+
+            std::string toString();
 
             ~FuncInfo();
         };

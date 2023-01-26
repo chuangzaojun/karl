@@ -27,7 +27,7 @@ namespace karl {
         }
 
         int Generator::writeInstruction(bytecode::Instruction *introduction) {
-            curFuncInfo->introductions.push_back(introduction);
+            curFuncInfo->instructions.push_back(introduction);
             switch (introduction->opCode) {
                 case bytecode::OpCode::PushIntConst:
                 case bytecode::OpCode::PushCharConst:
@@ -80,7 +80,7 @@ namespace karl {
                     curFuncInfo->maxLocalVarNum = ((bytecode::Instruction1Number *) introduction)->num + 1;
                 }
             }
-            return curFuncInfo->introductions.size() - 1;
+            return curFuncInfo->instructions.size() - 1;
         }
 
         int Generator::writeIntConst(int value) {
@@ -387,7 +387,7 @@ namespace karl {
                 curBlock = temp;
                 gotoIntroductionIndexes.push_back(writeInstruction(new bytecode::Instruction1Number
                                                                            (bytecode::OpCode::Goto, 0)));
-                ((bytecode::Instruction1Number *) curFuncInfo->introductions[introductionIndexTemp])->num =
+                ((bytecode::Instruction1Number *) curFuncInfo->instructions[introductionIndexTemp])->num =
                         curIntroductionNum();
             }
             if (stmt->conditions.size() < stmt->blocks.size()) {
@@ -397,12 +397,12 @@ namespace karl {
                 curBlock = temp;
             }
             for (int i: gotoIntroductionIndexes) {
-                ((bytecode::Instruction1Number *) curFuncInfo->introductions[i])->num = curIntroductionNum();
+                ((bytecode::Instruction1Number *) curFuncInfo->instructions[i])->num = curIntroductionNum();
             }
         }
 
         int Generator::curIntroductionNum() {
-            return curFuncInfo->introductions.size();
+            return curFuncInfo->instructions.size();
         }
 
         void Generator::generateWhileStmt(WhileStmt *stmt) {
@@ -414,13 +414,14 @@ namespace karl {
             curBlock = stmt->block;
             generateBlock();
             curBlock = temp;
+            writeInstruction(new bytecode::Instruction1Number(bytecode::OpCode::Goto, beginIndex));
             for (int i: stmt->block->breakIntroductionIndexes) {
-                ((bytecode::Instruction1Number *) curFuncInfo->introductions[i])->num = curIntroductionNum();
+                ((bytecode::Instruction1Number *) curFuncInfo->instructions[i])->num = curIntroductionNum();
             }
             for (int i: stmt->block->continueIntroductionIndexes) {
-                ((bytecode::Instruction1Number *) curFuncInfo->introductions[i])->num = beginIndex;
+                ((bytecode::Instruction1Number *) curFuncInfo->instructions[i])->num = beginIndex;
             }
-            ((bytecode::Instruction1Number *) curFuncInfo->introductions[introductionIndexTemp])->num = curIntroductionNum();
+            ((bytecode::Instruction1Number *) curFuncInfo->instructions[introductionIndexTemp])->num = curIntroductionNum();
         }
 
         void Generator::generateExprStmt(ExprStmt *stmt) {

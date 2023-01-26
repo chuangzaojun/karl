@@ -10,19 +10,8 @@ using namespace karl;
 
 int main() {
 
-    std::string src = "func fib(n: int) : int {\n"
-                      "    if (n == 0 || n == 1) {\n"
-                      "        return 1;\n"
-                      "    }\n"
-                      "    return fib(n - 1) + fib(n - 2);\n"
-                      "}\n"
-                      "\n"
-                      "func main() : void {\n"
-                      "    var a: int = 10, i: int = 0;\n"
-                      "    while (i <= a) {\n"
-                      "        i = i + 1;\n"
-                      "        print(fib(i), ' ');\n"
-                      "    }\n"
+    std::string src = "func main() : void {\n"
+                      "    print(\"Hello, World!\\n\");\n"
                       "}\n";
     compiler::Lexer *lexer = new compiler::Lexer(src);
     compiler::Parser *parser = new compiler::Parser(lexer);

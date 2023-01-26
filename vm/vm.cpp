@@ -16,7 +16,7 @@ namespace karl {
         }
 
         void VM::popFrame() {
-            delete curFrame;
+//            delete curFrame;
             stack.pop_back();
             std::list<Frame *>::iterator it = stack.end();
             it--;
@@ -27,13 +27,13 @@ namespace karl {
             globalVars.resize(bytecode->maxGlobalVarNum);
             pushFrame(0);
             while (stack.size() > 0) {
-                if (curFrame->getFuncInfo()->introductions[curFrame->getPc()]->introductionType() ==
+                if (curFrame->getFuncInfo()->instructions[curFrame->getPc()]->introductionType() ==
                     bytecode::InstructionType::With2Number) {
                     int numA = ((bytecode::Instruction2Number *) curFrame->getFuncInfo()
-                            ->introductions[curFrame->getPc()])->numA;
+                            ->instructions[curFrame->getPc()])->numA;
                     int numB = ((bytecode::Instruction2Number *) curFrame->getFuncInfo()
-                            ->introductions[curFrame->getPc()])->numB;
-                    switch (curFrame->getFuncInfo()->introductions[curFrame->getPc()]->opCode) {
+                            ->instructions[curFrame->getPc()])->numB;
+                    switch (curFrame->getFuncInfo()->instructions[curFrame->getPc()]->opCode) {
                         case bytecode::OpCode::FuncCall:
                             runFuncCall(numA, numB);
                             break;
@@ -41,11 +41,11 @@ namespace karl {
                             runNativeFuncCall(numA, numB);
                             break;
                     }
-                } else if (curFrame->getFuncInfo()->introductions[curFrame->getPc()]->introductionType() ==
+                } else if (curFrame->getFuncInfo()->instructions[curFrame->getPc()]->introductionType() ==
                            bytecode::InstructionType::With1Number) {
                     int num = ((bytecode::Instruction1Number *) curFrame->getFuncInfo()
-                            ->introductions[curFrame->getPc()])->num;
-                    switch (curFrame->getFuncInfo()->introductions[curFrame->getPc()]->opCode) {
+                            ->instructions[curFrame->getPc()])->num;
+                    switch (curFrame->getFuncInfo()->instructions[curFrame->getPc()]->opCode) {
                         case bytecode::OpCode::PushIntConst:
                             runPushIntConst(num);
                             break;
@@ -81,7 +81,7 @@ namespace karl {
                             break;
                     }
                 } else {
-                    switch (curFrame->getFuncInfo()->introductions[curFrame->getPc()]->opCode) {
+                    switch (curFrame->getFuncInfo()->instructions[curFrame->getPc()]->opCode) {
                         case bytecode::OpCode::Return:
                             runReturn();
                             break;
@@ -180,7 +180,9 @@ namespace karl {
                             break;
                     }
                 }
-                curFrame->setPc(curFrame->getPc() + 1);
+                if (curFrame != nullptr) {
+                    curFrame->setPc(curFrame->getPc() + 1);
+                }
             }
         }
 

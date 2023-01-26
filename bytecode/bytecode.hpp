@@ -16,6 +16,7 @@ namespace karl {
             std::vector<char> charConsts;
             std::vector<std::string> stringConsts;
 
+            std::string toString();
             ~Bytecode();
         };
     }

@@ -1,6 +1,8 @@
 #ifndef KARL_INSTRUCTION_HPP
 #define KARL_INSTRUCTION_HPP
 
+#include <string>
+
 namespace karl {
     namespace bytecode {
 
@@ -83,6 +85,7 @@ namespace karl {
             OpCode opCode;
 
             virtual InstructionType introductionType() = 0;
+            virtual std::string toString() = 0;
         };
 
         struct Instruction2Number : public Instruction {
@@ -91,6 +94,7 @@ namespace karl {
 
             Instruction2Number(OpCode opCode, int numA, int numB);
             InstructionType introductionType() override;
+            std::string toString() override;
         };
 
         struct Instruction1Number : public Instruction {
@@ -98,11 +102,13 @@ namespace karl {
 
             Instruction1Number(OpCode opCode, int num);
             InstructionType introductionType() override;
+            std::string toString() override;
         };
 
         struct Instruction0Number : public Instruction {
             Instruction0Number(OpCode opCode);
             InstructionType introductionType() override;
+            std::string toString() override;
         };
     }
 }
