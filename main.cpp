@@ -1,7 +1,6 @@
 #include "compiler/parser/parser.hpp"
 #include "compiler/type_checker/type_checker.hpp"
 #include "compiler/generator/generator.hpp"
-#include "vm/vm.hpp"
 #include <iostream>
 #include <vector>
 #include <map>
@@ -20,7 +19,8 @@ int main() {
     tc->checkProgram();
     compiler::Generator *generator = new compiler::Generator(program);
     bytecode::Bytecode *bytecode = generator->generateBytecode();
-    vm::VM *vm = new vm::VM(bytecode, new vm::Heap());
-    vm->run();
+    std::cout << bytecode->toString();
+//    vm::VM *vm = new vm::VM(bytecode, new vm::Heap());
+//    vm->run();
     return 0;
 }

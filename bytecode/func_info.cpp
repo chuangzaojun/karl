@@ -3,15 +3,15 @@
 namespace karl {
     namespace bytecode {
         FuncInfo::~FuncInfo() {
-            for (Instruction *introduction: instructions) {
-                delete introduction;
+            for (Instruction *instruction: instructions) {
+                delete instruction;
             }
         }
 
         std::string FuncInfo::toString() {
             std::string st;
-            for (Instruction *instruction: instructions) {
-                st += instruction->toString() + "\n";
+            for (int i = 0; i < instructions.size(); i++) {
+                st += "[" + std::to_string(i) + "] " + instructions[i]->toString() + "\n";
             }
             return st;
         }
