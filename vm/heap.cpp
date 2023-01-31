@@ -3,8 +3,9 @@
 namespace karl {
     namespace vm {
 
-        void Heap::define(Object *object) {
+        Object *Heap::define(Object *object) {
             objects.push_back(object);
+            return object;
         }
 
         Heap::~Heap() {

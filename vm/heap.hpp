@@ -11,7 +11,7 @@ namespace karl {
             std::list<Object *> objects;
 
         public:
-            void define(Object *object);
+            Object *define(Object *object);
             ~Heap();
         };
     }
