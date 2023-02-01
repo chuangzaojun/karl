@@ -290,7 +290,7 @@ namespace karl {
 
         void VM::run() {
             pushFrame(bytecode->funcInfos[0]);
-            while (frames.size() > 0) {
+            while (!frames.empty()) {
                 if (curFrame->curInstruction()->introductionType() == bytecode::InstructionType::With2Number) {
                     int numA = ((bytecode::Instruction2Number *) curFrame->curInstruction())->numA;
                     int numB = ((bytecode::Instruction2Number *) curFrame->curInstruction())->numB;
@@ -439,7 +439,9 @@ namespace karl {
                             break;
                     }
                 }
-                curFrame->setPc(curFrame->getPc());
+                if (frames.size() > 0) {
+                    curFrame->setPc(curFrame->getPc() + 1);
+                }
             }
         }
     }

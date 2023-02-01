@@ -5,8 +5,8 @@ namespace karl {
 
         Frame::Frame(bytecode::FuncInfo *funcInfo) {
             this->funcInfo = funcInfo;
-            stack = std::vector<Object *>(funcInfo->maxStackSize);
-            vars = std::vector<Object *>(funcInfo->maxLocalVarNum);
+            stack.resize(funcInfo->maxStackSize + 10);
+            vars.resize(funcInfo->maxLocalVarNum + 10);
             stackSize = 0;
             pc = 0;
         }
@@ -27,6 +27,7 @@ namespace karl {
         }
 
         Object *Frame::pop() {
+            stack[stackSize] = nullptr;
             stackSize--;
             return stack[stackSize];
         }

@@ -13,6 +13,8 @@ namespace karl {
 
             std::string toString();
 
+            FuncInfo();
+
             ~FuncInfo();
         };
     }

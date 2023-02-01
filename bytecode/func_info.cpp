@@ -15,5 +15,10 @@ namespace karl {
             }
             return st;
         }
+
+        FuncInfo::FuncInfo() {
+            maxLocalVarNum = 0;
+            maxStackSize = 0;
+        }
     }
 }

@@ -71,7 +71,9 @@ namespace karl {
         }
 
         std::string CharObject::getStringValue() {
-            return std::to_string(value);
+            std::string st;
+            st += value;
+            return st;
         }
 
         SingleObjectType CharObject::type() {
