@@ -15,6 +15,8 @@ namespace karl {
             Heap *heap;
             std::vector<Object *> globalVars;
 
+            const int gcNumObject = 64; // KB
+
             void pushFrame(bytecode::FuncInfo *funcInfo);
             void popFrame();
 
@@ -65,6 +67,9 @@ namespace karl {
             void runTypeToString();
             void runTypeToChar();
             void runTypeToBool();
+
+            void gc();
+            void markStackAndVarObjects();
 
         public:
             VM(bytecode::Bytecode *bytecode, Heap *heap);

@@ -19,7 +19,7 @@ func fib(n: int) : int {
 }
 
 func main() : void {
-    var a: int = 10, i: int = 0;
+    var n: int = 10, i: int = 0;
     while (i <= n) {
         i = i + 1;
         print(fib(i));

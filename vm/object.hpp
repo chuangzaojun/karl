@@ -16,12 +16,22 @@ namespace karl {
             Array
         };
 
+        enum class ObjectColor {
+            _,
+            White,
+            Grey,
+            Black
+        };
+
         struct Object {
+            ObjectColor color;
+
             virtual int getIntValue() = 0;
             virtual char getCharValue() = 0;
             virtual bool getBoolValue() = 0;
             virtual std::string getStringValue() = 0;
             virtual SingleObjectType type() = 0;
+            virtual void mark() = 0;
         };
 
         struct IntObject : public Object {
@@ -33,6 +43,7 @@ namespace karl {
             bool getBoolValue() override;
             std::string getStringValue() override;
             SingleObjectType type() override;
+            void mark() override;
         };
 
         struct BoolObject : public Object {
@@ -44,6 +55,7 @@ namespace karl {
             bool getBoolValue() override;
             std::string getStringValue() override;
             SingleObjectType type() override;
+            void mark() override;
         };
 
         struct CharObject : public Object {
@@ -55,6 +67,7 @@ namespace karl {
             bool getBoolValue() override;
             std::string getStringValue() override;
             SingleObjectType type() override;
+            void mark() override;
         };
 
         struct StringObject : public Object {
@@ -66,6 +79,7 @@ namespace karl {
             bool getBoolValue() override;
             std::string getStringValue() override;
             SingleObjectType type() override;
+            void mark() override;
         };
 
         struct ArrayObject : public Object {
@@ -77,6 +91,7 @@ namespace karl {
             bool getBoolValue() override;
             std::string getStringValue() override;
             SingleObjectType type() override;
+            void mark() override;
         };
     }
 }

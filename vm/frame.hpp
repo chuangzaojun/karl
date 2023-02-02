@@ -29,6 +29,8 @@ namespace karl {
             void setPc(int newPc);
             bytecode::Instruction *curInstruction();
 
+            void markObjects();
+
             Frame(bytecode::FuncInfo *funcInfo);
         };
 

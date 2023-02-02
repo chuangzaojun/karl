@@ -6,6 +6,7 @@
 #include "iostream"
 #include <fstream>
 #include <sstream>
+//#include <windows.h>
 
 namespace karl {
     namespace shell {
@@ -34,8 +35,10 @@ namespace karl {
             compiler::Generator *generator = new compiler::Generator(program);
             bytecode::Bytecode *bytecode = generator->generateBytecode();
 //            std::cout << bytecode->toString();
+//            DWORD startTime = GetTickCount();
             vm::VM *vm = new vm::VM(bytecode, new vm::Heap());
             vm->run();
+//            printf("\n\ntotal time = %lu\n", GetTickCount() - startTime);
         }
     }
 }

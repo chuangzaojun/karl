@@ -138,9 +138,16 @@ namespace karl {
         }
 
         void VM::runAdd() {
-            int b = curFrame->pop()->getIntValue();
-            int a = curFrame->pop()->getIntValue();
-            heap->define(curFrame->push(new IntObject(a + b)));
+            Object *object = curFrame->pop();
+            if (object->type() == SingleObjectType::Int) {
+                int b = object->getIntValue();
+                int a = curFrame->pop()->getIntValue();
+                heap->define(curFrame->push(new IntObject(a + b)));
+            } else if (object->type() == SingleObjectType::String) {
+                std::string b = object->getStringValue();
+                std::string a = curFrame->pop()->getStringValue();
+                heap->define(curFrame->push(new StringObject(a + b)));
+            }
         }
 
         void VM::runMul() {
@@ -442,6 +449,23 @@ namespace karl {
                 if (frames.size() > 0) {
                     curFrame->setPc(curFrame->getPc() + 1);
                 }
+                if (heap->getNumDefObject() >= gcNumObject) {
+                    gc();
+                }
+            }
+        }
+
+        void VM::gc() {
+            markStackAndVarObjects();
+            while (heap->hasGreyObject()) {
+                heap->markObjects();
+            }
+            heap->freeObjects();
+        }
+
+        void VM::markStackAndVarObjects() {
+            for (Frame *frame: frames) {
+                frame->markObjects();
             }
         }
     }

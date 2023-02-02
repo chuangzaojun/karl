@@ -2,16 +2,23 @@
 #define KARL_HEAP_HPP
 
 #include "object.hpp"
-#include <list>
+#include <vector>
 
 namespace karl {
     namespace vm {
         class Heap {
         private:
-            std::list<Object *> objects;
+            std::vector<Object *> objects;
+            int numDefObject;
 
         public:
+
+            Heap();
             Object *define(Object *object);
+            int getNumDefObject();
+            void markObjects();
+            void freeObjects();
+            bool hasGreyObject();
             ~Heap();
         };
     }

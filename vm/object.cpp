@@ -4,6 +4,7 @@ namespace karl {
     namespace vm {
 
         IntObject::IntObject(int value) {
+            color = ObjectColor::White;
             this->value = value;
         }
 
@@ -27,7 +28,12 @@ namespace karl {
             return SingleObjectType::Int;
         }
 
+        void IntObject::mark() {
+            color = ObjectColor::Black;
+        }
+
         BoolObject::BoolObject(bool value) {
+            color = ObjectColor::White;
             this->value = value;
         }
 
@@ -54,7 +60,12 @@ namespace karl {
             return SingleObjectType::Bool;
         }
 
+        void BoolObject::mark() {
+            color = ObjectColor::Black;
+        }
+
         CharObject::CharObject(char value) {
+            color = ObjectColor::White;
             this->value = value;
         }
 
@@ -80,7 +91,12 @@ namespace karl {
             return SingleObjectType::Char;
         }
 
+        void CharObject::mark() {
+            color = ObjectColor::Black;
+        }
+
         StringObject::StringObject(std::string value) {
+            color = ObjectColor::White;
             this->value = value;
         }
 
@@ -104,7 +120,12 @@ namespace karl {
             return SingleObjectType::String;
         }
 
+        void StringObject::mark() {
+            color = ObjectColor::Black;
+        }
+
         ArrayObject::ArrayObject(int size) {
+            color = ObjectColor::White;
             value = std::vector<Object *>(size);
         }
 
@@ -126,6 +147,13 @@ namespace karl {
 
         SingleObjectType ArrayObject::type() {
             return SingleObjectType::Array;
+        }
+
+        void ArrayObject::mark() {
+            color = ObjectColor::Black;
+            for (Object *object: value) {
+                object->color = ObjectColor::Grey;
+            }
         }
     }
 }

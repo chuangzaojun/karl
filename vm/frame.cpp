@@ -47,5 +47,20 @@ namespace karl {
         bytecode::Instruction *Frame::curInstruction() {
             return funcInfo->instructions[pc];
         }
+
+        void Frame::markObjects() {
+            for (Object *object: vars) {
+                if (object == nullptr) {
+                    break;
+                }
+                object->color = ObjectColor::Grey;
+            }
+            for (Object *object: stack) {
+                if (object == nullptr) {
+                    break;
+                }
+                object->color = ObjectColor::Grey;
+            }
+        }
     }
 }
