@@ -1,0 +1,31 @@
+name: Compile
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  compile:
+    strategy:
+      matrix:
+        os: [ windows-latest, macos-latest, ubuntu-latest ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - run: cmake -DCMAKE_BUILD_TYPE=Debug -S . -B build
+      - run: cmake --build build
+      - name: Upload Build Artifact (MacOS, Ubuntu)
+        if: matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v3.1.0
+        with:
+          name: ${{ matrix.os }}-build
+          path: build/karl
+      - name: Upload Build Artifact (Windows)
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v3.1.0
+        with:
+          name: ${{ matrix.os }}-build
+          path: build/Debug/karl.exe
